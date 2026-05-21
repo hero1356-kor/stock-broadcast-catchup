@@ -64,6 +64,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(createInitialState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
+    init {
+        startDemoInput()
+    }
+
     fun setMicrophonePermission(granted: Boolean) {
         _uiState.update { state ->
             state.copy(
