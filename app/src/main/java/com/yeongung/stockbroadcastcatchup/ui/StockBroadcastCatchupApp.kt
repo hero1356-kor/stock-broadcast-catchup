@@ -282,7 +282,7 @@ private fun CatchupAlertsScreen(
     ) {
         SimpleCard(containerColor = CatchupColors.PrimarySoft) {
             Text(
-                text = if (unreadCount > 0) "새로 잡힌 항목 $unreadCount개가 있습니다." else "확인하지 않은 항목은 없습니다.",
+                text = if (unreadCount > 0) "새로 잡힌 항목 ${unreadCount}개가 있습니다." else "확인하지 않은 항목은 없습니다.",
                 color = CatchupColors.Ink,
                 style = MaterialTheme.typography.bodyLarge,
             )
@@ -575,7 +575,7 @@ private fun CatchupAlertPreview(
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            text = if (unreadCount > 0) "$unreadCount개 새 알림" else "새 알림 없음",
+            text = if (unreadCount > 0) "${unreadCount}개 새 알림" else "새 알림 없음",
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.titleMedium,
         )
