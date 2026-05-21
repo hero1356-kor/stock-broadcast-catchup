@@ -3,6 +3,8 @@ package com.yeongung.stockbroadcastcatchup.input
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
 import com.yeongung.stockbroadcastcatchup.model.TranscriptLine
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 enum class BroadcastInputSourceType {
     FAKE,
@@ -37,4 +39,6 @@ interface BroadcastInputSource {
     val type: BroadcastInputSourceType
 
     fun currentSnapshot(): BroadcastInputSnapshot
+
+    fun transcriptFlow(): Flow<TranscriptLine> = emptyFlow()
 }
