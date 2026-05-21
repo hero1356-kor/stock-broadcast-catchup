@@ -125,6 +125,37 @@
 
 ---
 
+## Demo mode handoff
+
+현재 `MainViewModel`에는 앱 실행 직후 샘플 방송 자막을 자동 재생하는 데모 모드가 들어가 있습니다.
+
+목적:
+
+- 사용자가 APK를 설치하자마자 화면 흐름을 볼 수 있게 하기 위함
+- 마이크 권한, 주변 소음, Android STT 성공 여부와 UI 피드백을 분리하기 위함
+
+현재 동작:
+
+- `demoUseCase`가 `TextInputSource`를 사용합니다.
+- `init { startDemoInput() }`로 앱 실행 시 데모가 자동 시작됩니다.
+- 데모 자막은 최근 자막, 현재 주제, 최근 1분 요약, 캐치업 알림을 갱신합니다.
+- STT를 시작하면 데모 재생은 자동 중지됩니다.
+- 데모 속도는 빠른 확인을 위해 `DEMO_MILLISECONDS_PER_SCRIPT_SECOND = 250L`입니다.
+
+다음 Codex 작업 추천:
+
+```text
+Run the latest Android debug build.
+Fix build errors only.
+Then add visible Live screen controls:
+- 데모 다시 보기
+- 데모 중지
+Keep STT controls separate from demo controls.
+Do not add backend, external STT SDK, internal audio capture, or new market APIs yet.
+```
+
+---
+
 ## Codex 작업 지시 예시
 
 ```text
