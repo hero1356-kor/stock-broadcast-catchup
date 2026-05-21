@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
+import com.yeongung.stockbroadcastcatchup.model.CatchupAlert
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
 import com.yeongung.stockbroadcastcatchup.model.TranscriptLine
 import com.yeongung.stockbroadcastcatchup.ui.theme.CatchupColors
@@ -56,6 +57,7 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
             AppScreen.Live -> LiveScreen(
                 state = state,
                 onRecentSummary = viewModel::showRecentSummary,
+                onCatchupAlerts = viewModel::showCatchupAlerts,
                 onFinish = viewModel::finishAndShowDetail,
                 onHistory = viewModel::showHistory,
                 onCurrentIndex = viewModel::showCurrentIndex,
@@ -84,6 +86,13 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
                 broadcast = state.selectedBroadcast,
                 onBack = viewModel::showLive,
             )
+
+            AppScreen.CatchupAlerts -> CatchupAlertsScreen(
+                alerts = state.catchupAlerts,
+                unreadCount = state.unreadCatchupCount,
+                onMarkAllRead = viewModel::markAllCatchupAlertsRead,
+                onBack = viewModel::showLive,
+            )
         }
     }
 }
@@ -92,6 +101,7 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
 private fun LiveScreen(
     state: MainUiState,
     onRecentSummary: () -> Unit,
+    onCatchupAlerts: () -> Unit,
     onFinish: () -> Unit,
     onHistory: () -> Unit,
     onCurrentIndex: () -> Unit,
@@ -113,6 +123,19 @@ private fun LiveScreen(
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
+
+        Spacer(Modifier.height(14.dp))
+        SummaryPreviewCard(
+            items = state.recentOneMinuteSummary,
+            onOpen = onRecentSummary,
+        )
+
+        Spacer(Modifier.height(14.dp))
+        CatchupAlertPreview(
+            alerts = state.catchupAlerts,
+            unreadCount = state.unreadCatchupCount,
+            onOpen = onCatchupAlerts,
+        )
 
         Spacer(Modifier.height(16.dp))
         TranscriptPreview(lines = state.recentTranscript)
@@ -137,6 +160,13 @@ private fun LiveScreen(
             containerColor = CatchupColors.Primary,
             contentColor = Color(0xFF041313),
             onClick = onRecentSummary,
+        )
+        Spacer(Modifier.height(10.dp))
+        ActionButton(
+            text = "캐치업 알림 보기",
+            containerColor = CatchupColors.SurfaceMuted,
+            contentColor = CatchupColors.Ink,
+            onClick = onCatchupAlerts,
         )
         Spacer(Modifier.height(10.dp))
         ActionButton(
@@ -231,6 +261,62 @@ private fun CurrentIndexScreen(
         Spacer(Modifier.height(10.dp))
         ActionButton(
             text = "닫기",
+            containerColor = CatchupColors.Primary,
+            contentColor = Color(0xFF041313),
+            onClick = onBack,
+        )
+    }
+}
+
+@Composable
+private fun CatchupAlertsScreen(
+    alerts: List<CatchupAlert>,
+    unreadCount: Int,
+    onMarkAllRead: () -> Unit,
+    onBack: () -> Unit,
+) {
+    ScrollPage(
+        title = "캐치업 알림",
+        subtitle = "놓친 방송 흐름",
+        onBack = onBack,
+    ) {
+        SimpleCard(containerColor = CatchupColors.PrimarySoft) {
+            Text(
+                text = if (unreadCount > 0) "새로 잡힌 항목 $unreadCount개가 있습니다." else "확인하지 않은 항목은 없습니다.",
+                color = CatchupColors.Ink,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+
+        if (alerts.isEmpty()) {
+            Spacer(Modifier.height(12.dp))
+            SimpleCard {
+                Text(
+                    text = "방송에서 중요한 키워드가 나오면 여기에 모아둘게요.",
+                    color = CatchupColors.Ink,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        } else {
+            Spacer(Modifier.height(12.dp))
+            alerts.forEach { alert ->
+                CatchupAlertCard(alert = alert)
+                Spacer(Modifier.height(10.dp))
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+        if (unreadCount > 0) {
+            ActionButton(
+                text = "모두 확인",
+                containerColor = CatchupColors.SurfaceMuted,
+                contentColor = CatchupColors.Ink,
+                onClick = onMarkAllRead,
+            )
+            Spacer(Modifier.height(10.dp))
+        }
+        ActionButton(
+            text = "라이브로 돌아가기",
             containerColor = CatchupColors.Primary,
             contentColor = Color(0xFF041313),
             onClick = onBack,
@@ -441,6 +527,68 @@ private fun StatusPill(
 }
 
 @Composable
+private fun SummaryPreviewCard(
+    items: List<String>,
+    onOpen: () -> Unit,
+) {
+    SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SectionTitle("요약카드")
+            TextButton(onClick = onOpen) {
+                Text(
+                    text = "자세히",
+                    color = CatchupColors.Primary,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        BulletList(items = items.take(2))
+    }
+}
+
+@Composable
+private fun CatchupAlertPreview(
+    alerts: List<CatchupAlert>,
+    unreadCount: Int,
+    onOpen: () -> Unit,
+) {
+    val latestAlert = alerts.firstOrNull()
+    SimpleCard(containerColor = CatchupColors.PrimarySoft) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SectionTitle("캐치업")
+            TextButton(onClick = onOpen) {
+                Text(
+                    text = "보기",
+                    color = CatchupColors.Primary,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = if (unreadCount > 0) "$unreadCount개 새 알림" else "새 알림 없음",
+            color = CatchupColors.Ink,
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = latestAlert?.title ?: "중요한 방송 흐름이 잡히면 여기에 쌓입니다.",
+            color = CatchupColors.InkMuted,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+}
+
+@Composable
 private fun TranscriptPreview(lines: List<TranscriptLine>) {
     SimpleCard {
         SectionTitle("실시간 자막")
@@ -469,6 +617,41 @@ private fun TranscriptLineRow(line: TranscriptLine) {
         Text(
             text = line.text,
             color = CatchupColors.Ink,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+}
+
+@Composable
+private fun CatchupAlertCard(alert: CatchupAlert) {
+    SimpleCard(containerColor = if (alert.isRead) CatchupColors.Surface else CatchupColors.SurfaceRaised) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = alert.time,
+                color = CatchupColors.Primary,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = if (alert.isRead) "확인함" else "새 알림",
+                color = if (alert.isRead) CatchupColors.InkMuted else CatchupColors.Primary,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = alert.title,
+            color = CatchupColors.Ink,
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = alert.message,
+            color = CatchupColors.InkMuted,
             style = MaterialTheme.typography.bodyLarge,
         )
     }
