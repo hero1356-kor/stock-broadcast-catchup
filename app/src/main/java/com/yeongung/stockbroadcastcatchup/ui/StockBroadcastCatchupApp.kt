@@ -1,5 +1,9 @@
 package com.yeongung.stockbroadcastcatchup.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,13 +33,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
@@ -51,11 +58,43 @@ import com.yeongung.stockbroadcastcatchup.viewmodel.MainViewModel
 @Composable
 fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val microphonePermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        viewModel.setMicrophonePermission(granted)
+        if (granted) {
+            viewModel.startSttInput()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val granted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO,
+        ) == PackageManager.PERMISSION_GRANTED
+        viewModel.setMicrophonePermission(granted)
+    }
+
+    fun startSttOrRequestPermission() {
+        val granted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO,
+        ) == PackageManager.PERMISSION_GRANTED
+        viewModel.setMicrophonePermission(granted)
+        if (granted) {
+            viewModel.startSttInput()
+        } else {
+            microphonePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
 
     StockBroadcastCatchupTheme {
         when (state.screen) {
             AppScreen.Live -> LiveScreen(
                 state = state,
+                onStartStt = { startSttOrRequestPermission() },
+                onStopStt = viewModel::stopSttInput,
                 onRecentSummary = viewModel::showRecentSummary,
                 onCatchupAlerts = viewModel::showCatchupAlerts,
                 onFinish = viewModel::finishAndShowDetail,
@@ -100,6 +139,8 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
 @Composable
 private fun LiveScreen(
     state: MainUiState,
+    onStartStt: () -> Unit,
+    onStopStt: () -> Unit,
     onRecentSummary: () -> Unit,
     onCatchupAlerts: () -> Unit,
     onFinish: () -> Unit,
@@ -112,8 +153,16 @@ private fun LiveScreen(
             elapsed = state.elapsedLabel,
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(18.dp))
+        SttControlCard(
+            hasMicrophonePermission = state.hasMicrophonePermission,
+            isListening = state.isSttListening,
+            statusLabel = state.sttStatusLabel,
+            onStart = onStartStt,
+            onStop = onStopStt,
+        )
 
+        Spacer(Modifier.height(18.dp))
         SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
             SectionTitle("지금 무슨 얘기?")
             Spacer(Modifier.height(10.dp))
@@ -522,6 +571,36 @@ private fun StatusPill(
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(start = 10.dp),
+        )
+    }
+}
+
+@Composable
+private fun SttControlCard(
+    hasMicrophonePermission: Boolean,
+    isListening: Boolean,
+    statusLabel: String,
+    onStart: () -> Unit,
+    onStop: () -> Unit,
+) {
+    SimpleCard(containerColor = CatchupColors.PrimarySoft) {
+        SectionTitle("STT")
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = statusLabel,
+            color = CatchupColors.Ink,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        Spacer(Modifier.height(12.dp))
+        ActionButton(
+            text = when {
+                isListening -> "STT 중지"
+                hasMicrophonePermission -> "STT 시작"
+                else -> "마이크 권한 허용"
+            },
+            containerColor = if (isListening) CatchupColors.Secondary else CatchupColors.Primary,
+            contentColor = if (isListening) Color.White else Color(0xFF041313),
+            onClick = if (isListening) onStop else onStart,
         )
     }
 }
