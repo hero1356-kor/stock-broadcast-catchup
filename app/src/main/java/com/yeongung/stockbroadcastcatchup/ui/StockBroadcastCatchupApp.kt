@@ -93,7 +93,7 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
         when (state.screen) {
             AppScreen.Live -> LiveScreen(
                 state = state,
-                onStartStt = ::startSttOrRequestPermission,
+                onStartStt = { startSttOrRequestPermission() },
                 onStopStt = viewModel::stopSttInput,
                 onRecentSummary = viewModel::showRecentSummary,
                 onCatchupAlerts = viewModel::showCatchupAlerts,
