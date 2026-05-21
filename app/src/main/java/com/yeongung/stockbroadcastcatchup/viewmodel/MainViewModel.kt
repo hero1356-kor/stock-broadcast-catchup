@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeongung.stockbroadcastcatchup.domain.BroadcastCatchupUseCase
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
+import com.yeongung.stockbroadcastcatchup.model.CatchupAlert
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
 import com.yeongung.stockbroadcastcatchup.model.TranscriptLine
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ enum class AppScreen {
     CurrentIndex,
     History,
     BroadcastDetail,
+    CatchupAlerts,
 }
 
 data class MainUiState(
@@ -30,9 +32,13 @@ data class MainUiState(
     val currentIndices: List<IndexQuote> = emptyList(),
     val currentIndexStatusLabel: String = "가상 지수입니다. 화면을 열면 최신 값을 가져옵니다.",
     val isRefreshingCurrentIndices: Boolean = false,
+    val catchupAlerts: List<CatchupAlert> = emptyList(),
     val history: List<BroadcastSession> = emptyList(),
     val selectedBroadcast: BroadcastSession? = null,
-)
+) {
+    val unreadCatchupCount: Int
+        get() = catchupAlerts.count { !it.isRead }
+}
 
 class MainViewModel : ViewModel() {
     private val catchupUseCase = BroadcastCatchupUseCase()
@@ -50,6 +56,18 @@ class MainViewModel : ViewModel() {
 
     fun showRecentSummary() {
         _uiState.update { it.copy(screen = AppScreen.RecentSummary) }
+    }
+
+    fun showCatchupAlerts() {
+        _uiState.update { it.copy(screen = AppScreen.CatchupAlerts) }
+    }
+
+    fun markAllCatchupAlertsRead() {
+        _uiState.update { state ->
+            state.copy(
+                catchupAlerts = state.catchupAlerts.map { it.copy(isRead = true) },
+            )
+        }
     }
 
     fun showCurrentIndex() {
@@ -116,12 +134,20 @@ class MainViewModel : ViewModel() {
             catchupUseCase.transcriptFlow().collect { line ->
                 _uiState.update { state ->
                     val nextTranscript = (listOf(line) + state.recentTranscript).take(MAX_RECENT_TRANSCRIPT_LINES)
+                    val alert = catchupUseCase.buildCatchupAlert(line)
+                    val nextAlerts = if (alert == null) {
+                        state.catchupAlerts
+                    } else {
+                        (listOf(alert) + state.catchupAlerts).distinctBy { it.id }.take(MAX_CATCHUP_ALERTS)
+                    }
+
                     state.copy(
                         listeningStatus = "자막 입력 중",
                         elapsedLabel = line.time,
                         currentTopic = catchupUseCase.inferCurrentTopic(nextTranscript),
                         recentTranscript = nextTranscript,
                         recentOneMinuteSummary = catchupUseCase.summarizeRecentTranscript(nextTranscript),
+                        catchupAlerts = nextAlerts,
                     )
                 }
             }
@@ -145,5 +171,6 @@ class MainViewModel : ViewModel() {
 
     private companion object {
         const val MAX_RECENT_TRANSCRIPT_LINES = 3
+        const val MAX_CATCHUP_ALERTS = 5
     }
 }

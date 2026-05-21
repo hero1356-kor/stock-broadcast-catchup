@@ -12,6 +12,14 @@ data class IndexQuote(
     val isUp: Boolean,
 )
 
+data class CatchupAlert(
+    val id: String,
+    val time: String,
+    val title: String,
+    val message: String,
+    val isRead: Boolean = false,
+)
+
 data class TimelineItem(
     val time: String,
     val title: String,
