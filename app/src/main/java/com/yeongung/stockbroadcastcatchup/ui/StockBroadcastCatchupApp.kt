@@ -68,6 +68,9 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
 
             AppScreen.CurrentIndex -> CurrentIndexScreen(
                 indices = state.currentIndices,
+                statusLabel = state.currentIndexStatusLabel,
+                isRefreshing = state.isRefreshingCurrentIndices,
+                onRefresh = viewModel::refreshCurrentIndices,
                 onBack = viewModel::showLive,
             )
 
@@ -194,6 +197,9 @@ private fun RecentSummaryScreen(
 @Composable
 private fun CurrentIndexScreen(
     indices: List<IndexQuote>,
+    statusLabel: String,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onBack: () -> Unit,
 ) {
     ScrollPage(
@@ -201,12 +207,28 @@ private fun CurrentIndexScreen(
         subtitle = "원할 때만 보기",
         onBack = onBack,
     ) {
+        SimpleCard(containerColor = CatchupColors.PrimarySoft) {
+            Text(
+                text = statusLabel,
+                color = CatchupColors.Ink,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
         indices.forEach { quote ->
             IndexQuoteCard(quote = quote)
             Spacer(Modifier.height(10.dp))
         }
 
         Spacer(Modifier.height(12.dp))
+        ActionButton(
+            text = if (isRefreshing) "가져오는 중..." else "새로고침",
+            containerColor = CatchupColors.SurfaceMuted,
+            contentColor = CatchupColors.Ink,
+            onClick = onRefresh,
+        )
+        Spacer(Modifier.height(10.dp))
         ActionButton(
             text = "닫기",
             containerColor = CatchupColors.Primary,
