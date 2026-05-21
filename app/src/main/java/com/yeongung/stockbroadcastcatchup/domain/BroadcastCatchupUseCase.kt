@@ -20,6 +20,21 @@ class BroadcastCatchupUseCase(
 
     suspend fun loadLiveCurrentIndices(): MarketIndexResult = marketIndexRepository.currentIndices()
 
+    fun recentOneMinuteTranscript(
+        transcript: List<TranscriptLine>,
+        maxLines: Int,
+    ): List<TranscriptLine> {
+        val latestSeconds = transcript.firstOrNull()?.time?.toElapsedSeconds()
+            ?: return transcript.take(maxLines)
+
+        return transcript
+            .filter { line ->
+                val seconds = line.time.toElapsedSeconds()
+                seconds == null || latestSeconds - seconds <= ONE_MINUTE_SECONDS
+            }
+            .take(maxLines)
+    }
+
     fun inferCurrentTopic(recentTranscript: List<TranscriptLine>): String {
         val combinedText = recentTranscript.joinToString(separator = " ") { it.text }
         val topics = mutableListOf<String>()
@@ -38,7 +53,7 @@ class BroadcastCatchupUseCase(
         }
 
         return if (topics.isEmpty()) {
-            "방송 자막을 받아 핵심 흐름을 정리하는 중입니다."
+            "방송 음성을 받아 핵심 흐름을 정리하는 중입니다."
         } else {
             "${topics.distinct().joinToString(", ")} 흐름을 이야기하는 중입니다."
         }
@@ -47,15 +62,15 @@ class BroadcastCatchupUseCase(
     fun summarizeRecentTranscript(recentTranscript: List<TranscriptLine>): List<String> {
         if (recentTranscript.isEmpty()) {
             return listOf(
-                "방송 자막이 들어오면 최근 흐름을 바로 정리합니다.",
+                "STT가 시작되면 최근 1분 방송 흐름을 바로 정리합니다.",
                 "시장 키워드가 쌓이면 캐치업 알림으로 따로 모아둡니다.",
             )
         }
 
         val latestLine = recentTranscript.first()
         return listOf(
-            "최근 자막 ${recentTranscript.size}개를 기준으로 흐름을 갱신했습니다.",
-            "방금 나온 문장: ${latestLine.text}",
+            "최근 1분 자막 ${recentTranscript.size}개를 기준으로 흐름을 갱신했습니다.",
+            "방금 인식한 문장: ${latestLine.text}",
             inferCurrentTopic(recentTranscript),
         )
     }
@@ -98,6 +113,19 @@ class BroadcastCatchupUseCase(
         history: List<BroadcastSession>,
         id: String,
     ): BroadcastSession? = history.firstOrNull { it.id == id }
+
+    private fun String.toElapsedSeconds(): Long? {
+        val parts = split(":").mapNotNull { it.toLongOrNull() }
+        return when (parts.size) {
+            2 -> parts[0] * 60L + parts[1]
+            3 -> parts[0] * 3_600L + parts[1] * 60L + parts[2]
+            else -> null
+        }
+    }
+
+    private companion object {
+        const val ONE_MINUTE_SECONDS = 60L
+    }
 }
 
 private data class CatchupAlertDraft(
