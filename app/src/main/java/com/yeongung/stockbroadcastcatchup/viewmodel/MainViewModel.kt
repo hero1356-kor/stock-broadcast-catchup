@@ -1,7 +1,7 @@
 package com.yeongung.stockbroadcastcatchup.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.yeongung.stockbroadcastcatchup.data.FakeBroadcastRepository
+import com.yeongung.stockbroadcastcatchup.domain.BroadcastCatchupUseCase
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
 import com.yeongung.stockbroadcastcatchup.model.TranscriptLine
@@ -31,7 +31,7 @@ data class MainUiState(
 )
 
 class MainViewModel : ViewModel() {
-    private val repository = FakeBroadcastRepository()
+    private val catchupUseCase = BroadcastCatchupUseCase()
 
     private val _uiState = MutableStateFlow(createInitialState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -65,22 +65,23 @@ class MainViewModel : ViewModel() {
         _uiState.update { state ->
             state.copy(
                 screen = AppScreen.BroadcastDetail,
-                selectedBroadcast = state.history.firstOrNull { it.id == id } ?: state.selectedBroadcast,
+                selectedBroadcast = catchupUseCase.findBroadcast(state.history, id)
+                    ?: state.selectedBroadcast,
             )
         }
     }
 
     private fun createInitialState(): MainUiState {
-        val history = repository.broadcastHistory()
+        val snapshot = catchupUseCase.loadCurrentSnapshot()
         return MainUiState(
-            listeningStatus = repository.listeningStatus(),
-            elapsedLabel = repository.elapsedLabel(),
-            currentTopic = repository.currentTopic(),
-            recentTranscript = repository.recentTranscript(),
-            recentOneMinuteSummary = repository.recentOneMinuteSummary(),
-            currentIndices = repository.currentIndices(),
-            history = history,
-            selectedBroadcast = history.firstOrNull(),
+            listeningStatus = snapshot.listeningStatus,
+            elapsedLabel = snapshot.elapsedLabel,
+            currentTopic = snapshot.currentTopic,
+            recentTranscript = snapshot.recentTranscript,
+            recentOneMinuteSummary = snapshot.recentOneMinuteSummary,
+            currentIndices = snapshot.currentIndices,
+            history = snapshot.history,
+            selectedBroadcast = snapshot.history.firstOrNull(),
         )
     }
 }
