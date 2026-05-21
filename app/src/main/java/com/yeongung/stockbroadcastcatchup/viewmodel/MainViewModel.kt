@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeongung.stockbroadcastcatchup.domain.BroadcastCatchupUseCase
 import com.yeongung.stockbroadcastcatchup.input.MicInputSource
+import com.yeongung.stockbroadcastcatchup.input.TextInputSource
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
 import com.yeongung.stockbroadcastcatchup.model.CatchupAlert
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
@@ -39,6 +40,8 @@ data class MainUiState(
     val hasMicrophonePermission: Boolean = false,
     val isSttListening: Boolean = false,
     val sttStatusLabel: String = "마이크 권한을 확인한 뒤 STT를 시작할 수 있습니다.",
+    val isDemoRunning: Boolean = false,
+    val demoStatusLabel: String = "앱 화면을 먼저 볼 수 있게 샘플 방송 자막을 재생할 수 있습니다.",
     val catchupAlerts: List<CatchupAlert> = emptyList(),
     val history: List<BroadcastSession> = emptyList(),
     val selectedBroadcast: BroadcastSession? = null,
@@ -48,10 +51,15 @@ data class MainUiState(
 }
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val catchupUseCase = BroadcastCatchupUseCase(
+    private val micUseCase = BroadcastCatchupUseCase(
         inputSource = MicInputSource(application),
     )
+    private val demoUseCase = BroadcastCatchupUseCase(
+        inputSource = TextInputSource(millisecondsPerScriptSecond = DEMO_MILLISECONDS_PER_SCRIPT_SECOND),
+    )
+    private val catchupUseCase = micUseCase
     private var sttJob: Job? = null
+    private var demoJob: Job? = null
 
     private val _uiState = MutableStateFlow(createInitialState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -69,8 +77,72 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun startDemoInput() {
+        if (_uiState.value.isDemoRunning || demoJob?.isActive == true) return
+        stopSttInput(updateStatus = false)
+
+        demoJob = viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isDemoRunning = true,
+                    listeningStatus = "데모 재생 중",
+                    elapsedLabel = "00:00:00",
+                    currentTopic = "샘플 방송 자막을 재생하고 있습니다.",
+                    recentTranscript = emptyList(),
+                    recentOneMinuteSummary = listOf(
+                        "샘플 자막이 들어오면 최근 1분 요약이 갱신됩니다.",
+                        "STT 성공 여부와 상관없이 UI 흐름을 먼저 확인할 수 있습니다.",
+                    ),
+                    catchupAlerts = emptyList(),
+                    demoStatusLabel = "샘플 방송 자막을 재생 중입니다.",
+                    sttStatusLabel = "데모 재생 중에는 STT를 잠시 멈춥니다.",
+                )
+            }
+
+            demoUseCase.transcriptFlow()
+                .catch { error ->
+                    _uiState.update {
+                        it.copy(
+                            isDemoRunning = false,
+                            listeningStatus = "데모 오류",
+                            demoStatusLabel = error.message ?: "데모 자막을 재생하지 못했습니다.",
+                        )
+                    }
+                }
+                .collect { line ->
+                    applyTranscriptLine(line = line, useCase = demoUseCase) { state ->
+                        state.copy(
+                            listeningStatus = "데모 재생 중",
+                            demoStatusLabel = "샘플 자막이 요약에 반영됐습니다.",
+                        )
+                    }
+                }
+
+            _uiState.update {
+                it.copy(
+                    isDemoRunning = false,
+                    listeningStatus = "데모 완료",
+                    demoStatusLabel = "샘플 방송 자막 재생이 끝났습니다.",
+                )
+            }
+        }
+    }
+
+    fun stopDemoInput() {
+        demoJob?.cancel()
+        demoJob = null
+        _uiState.update {
+            it.copy(
+                isDemoRunning = false,
+                listeningStatus = "데모 중지",
+                demoStatusLabel = "데모 자막 재생이 중지됐습니다.",
+            )
+        }
+    }
+
     fun startSttInput() {
         if (_uiState.value.isSttListening || sttJob?.isActive == true) return
+        stopDemoInputForStt()
         if (!_uiState.value.hasMicrophonePermission) {
             _uiState.update {
                 it.copy(sttStatusLabel = "마이크 권한을 허용하면 STT를 시작합니다.")
@@ -84,10 +156,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     isSttListening = true,
                     listeningStatus = "STT 듣는 중",
                     sttStatusLabel = "말소리를 듣고 있습니다.",
+                    demoStatusLabel = "STT 테스트 중에는 데모 자막이 멈춥니다.",
                 )
             }
 
-            catchupUseCase.transcriptFlow()
+            micUseCase.transcriptFlow()
                 .catch { error ->
                     _uiState.update {
                         it.copy(
@@ -98,25 +171,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
                 .collect { line ->
-                    _uiState.update { state ->
-                        val nextTranscript = catchupUseCase.recentOneMinuteTranscript(
-                            transcript = listOf(line) + state.recentTranscript,
-                            maxLines = MAX_RECENT_TRANSCRIPT_LINES,
-                        )
-                        val alert = catchupUseCase.buildCatchupAlert(line)
-                        val nextAlerts = if (alert == null) {
-                            state.catchupAlerts
-                        } else {
-                            (listOf(alert) + state.catchupAlerts).distinctBy { it.id }.take(MAX_CATCHUP_ALERTS)
-                        }
-
+                    applyTranscriptLine(line = line, useCase = micUseCase) { state ->
                         state.copy(
                             listeningStatus = "STT 듣는 중",
-                            elapsedLabel = line.time,
-                            currentTopic = catchupUseCase.inferCurrentTopic(nextTranscript),
-                            recentTranscript = nextTranscript,
-                            recentOneMinuteSummary = catchupUseCase.summarizeRecentTranscript(nextTranscript),
-                            catchupAlerts = nextAlerts,
                             sttStatusLabel = "인식된 문장을 요약에 반영했습니다.",
                         )
                     }
@@ -125,13 +182,58 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun stopSttInput() {
+        stopSttInput(updateStatus = true)
+    }
+
+    private fun stopSttInput(updateStatus: Boolean) {
         sttJob?.cancel()
         sttJob = null
         _uiState.update {
-            it.copy(
-                isSttListening = false,
-                listeningStatus = "STT 중지",
-                sttStatusLabel = "STT가 중지됐습니다.",
+            if (updateStatus) {
+                it.copy(
+                    isSttListening = false,
+                    listeningStatus = "STT 중지",
+                    sttStatusLabel = "STT가 중지됐습니다.",
+                )
+            } else {
+                it.copy(isSttListening = false)
+            }
+        }
+    }
+
+    private fun stopDemoInputForStt() {
+        demoJob?.cancel()
+        demoJob = null
+        _uiState.update {
+            it.copy(isDemoRunning = false)
+        }
+    }
+
+    private fun applyTranscriptLine(
+        line: TranscriptLine,
+        useCase: BroadcastCatchupUseCase,
+        extraState: (MainUiState) -> MainUiState,
+    ) {
+        _uiState.update { state ->
+            val nextTranscript = useCase.recentOneMinuteTranscript(
+                transcript = listOf(line) + state.recentTranscript,
+                maxLines = MAX_RECENT_TRANSCRIPT_LINES,
+            )
+            val alert = useCase.buildCatchupAlert(line)
+            val nextAlerts = if (alert == null) {
+                state.catchupAlerts
+            } else {
+                (listOf(alert) + state.catchupAlerts).distinctBy { it.id }.take(MAX_CATCHUP_ALERTS)
+            }
+
+            extraState(
+                state.copy(
+                    elapsedLabel = line.time,
+                    currentTopic = useCase.inferCurrentTopic(nextTranscript),
+                    recentTranscript = nextTranscript,
+                    recentOneMinuteSummary = useCase.summarizeRecentTranscript(nextTranscript),
+                    catchupAlerts = nextAlerts,
+                ),
             )
         }
     }
@@ -216,7 +318,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        stopSttInput()
+        stopDemoInputForStt()
+        stopSttInput(updateStatus = false)
         super.onCleared()
     }
 
@@ -237,5 +340,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private companion object {
         const val MAX_RECENT_TRANSCRIPT_LINES = 12
         const val MAX_CATCHUP_ALERTS = 5
+        const val DEMO_MILLISECONDS_PER_SCRIPT_SECOND = 250L
     }
 }
