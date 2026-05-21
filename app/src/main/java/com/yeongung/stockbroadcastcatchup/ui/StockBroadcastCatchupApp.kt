@@ -94,32 +94,45 @@ private fun LiveScreen(
     onCurrentIndex: () -> Unit,
 ) {
     ScrollPage {
-        ListeningStatus(
+        LiveHeader(
             status = state.listeningStatus,
             elapsed = state.elapsedLabel,
         )
 
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(24.dp))
 
-        Text(
-            text = "지금 무슨 얘기?",
-            color = CatchupColors.InkMuted,
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = state.currentTopic,
-            color = CatchupColors.Ink,
-            style = MaterialTheme.typography.headlineMedium,
-        )
+        SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
+            SectionTitle("지금 무슨 얘기?")
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = state.currentTopic,
+                color = CatchupColors.Ink,
+                style = MaterialTheme.typography.headlineMedium,
+            )
+        }
 
-        Spacer(Modifier.height(26.dp))
+        Spacer(Modifier.height(16.dp))
         TranscriptPreview(lines = state.recentTranscript)
 
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            TextButton(onClick = onCurrentIndex) {
+                Text(
+                    text = "현재 지수 보기",
+                    color = CatchupColors.Primary,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(20.dp))
         ActionButton(
             text = "방금 1분 요약",
             containerColor = CatchupColors.Primary,
+            contentColor = Color(0xFF041313),
             onClick = onRecentSummary,
         )
         Spacer(Modifier.height(10.dp))
@@ -135,13 +148,6 @@ private fun LiveScreen(
             contentColor = CatchupColors.Ink,
             onClick = onHistory,
         )
-        Spacer(Modifier.height(10.dp))
-        ActionButton(
-            text = "현재 지수 보기",
-            containerColor = CatchupColors.SurfaceMuted,
-            contentColor = CatchupColors.Ink,
-            onClick = onCurrentIndex,
-        )
     }
 }
 
@@ -154,8 +160,17 @@ private fun RecentSummaryScreen(
         title = "방금 1분 요약",
         onBack = onBack,
     ) {
-        SimpleCard {
-            NumberedList(items = state.recentOneMinuteSummary)
+        SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
+            BulletList(items = state.recentOneMinuteSummary)
+        }
+
+        Spacer(Modifier.height(14.dp))
+        SimpleCard(containerColor = CatchupColors.PrimarySoft) {
+            Text(
+                text = "일부 구간은 소음으로 누락될 수 있어요",
+                color = CatchupColors.Ink,
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
 
         Spacer(Modifier.height(18.dp))
@@ -170,6 +185,7 @@ private fun RecentSummaryScreen(
         ActionButton(
             text = "라이브로 돌아가기",
             containerColor = CatchupColors.Primary,
+            contentColor = Color(0xFF041313),
             onClick = onBack,
         )
     }
@@ -182,6 +198,7 @@ private fun CurrentIndexScreen(
 ) {
     ScrollPage(
         title = "현재 지수",
+        subtitle = "원할 때만 보기",
         onBack = onBack,
     ) {
         indices.forEach { quote ->
@@ -193,6 +210,7 @@ private fun CurrentIndexScreen(
         ActionButton(
             text = "닫기",
             containerColor = CatchupColors.Primary,
+            contentColor = Color(0xFF041313),
             onClick = onBack,
         )
     }
@@ -293,7 +311,7 @@ private fun BroadcastDetailScreen(
                     style = MaterialTheme.typography.bodyLarge,
                 )
             } else {
-                NumberedList(items = broadcast.lowConfidenceRanges)
+                BulletList(items = broadcast.lowConfidenceRanges)
             }
         }
     }
@@ -302,6 +320,7 @@ private fun BroadcastDetailScreen(
 @Composable
 private fun ScrollPage(
     title: String? = null,
+    subtitle: String? = null,
     onBack: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -316,7 +335,7 @@ private fun ScrollPage(
                 .padding(22.dp),
         ) {
             if (title != null && onBack != null) {
-                TopBar(title = title, onBack = onBack)
+                TopBar(title = title, subtitle = subtitle, onBack = onBack)
             }
             content()
         }
@@ -324,20 +343,36 @@ private fun ScrollPage(
 }
 
 @Composable
+private fun LiveHeader(
+    status: String,
+    elapsed: String,
+) {
+    Column {
+        Text(
+            text = "주식방송 캐치업",
+            color = CatchupColors.Ink,
+            style = MaterialTheme.typography.headlineLarge,
+        )
+        Spacer(Modifier.height(12.dp))
+        StatusPill(status = status, elapsed = elapsed)
+    }
+}
+
+@Composable
 private fun TopBar(
     title: String,
+    subtitle: String? = null,
     onBack: () -> Unit,
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         TextButton(onClick = onBack) {
             Text(
                 text = "뒤로",
-                color = CatchupColors.Secondary,
+                color = CatchupColors.Primary,
                 style = MaterialTheme.typography.labelLarge,
             )
         }
@@ -345,43 +380,49 @@ private fun TopBar(
             text = title,
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(start = 8.dp),
         )
+        if (subtitle != null) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = subtitle,
+                color = CatchupColors.InkMuted,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
     }
 }
 
 @Composable
-private fun ListeningStatus(
+private fun StatusPill(
     status: String,
     elapsed: String,
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(CatchupColors.Surface, RoundedCornerShape(8.dp))
-            .padding(18.dp),
+            .background(CatchupColors.PrimarySoft, RoundedCornerShape(8.dp))
+            .padding(horizontal = 14.dp, vertical = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
-                .size(14.dp)
+                .size(10.dp)
                 .clip(CircleShape)
                 .background(CatchupColors.Positive),
         )
         Text(
             text = "$status $elapsed",
             color = CatchupColors.Ink,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(start = 12.dp),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(start = 10.dp),
         )
     }
 }
 
 @Composable
 private fun TranscriptPreview(lines: List<TranscriptLine>) {
-    SectionTitle("최근 자막 3줄")
-    Spacer(Modifier.height(8.dp))
     SimpleCard {
+        SectionTitle("실시간 자막")
+        Spacer(Modifier.height(10.dp))
         lines.forEachIndexed { index, line ->
             TranscriptLineRow(line = line)
             if (index != lines.lastIndex) {
@@ -399,7 +440,7 @@ private fun TranscriptLineRow(line: TranscriptLine) {
     Column {
         Text(
             text = line.time,
-            color = CatchupColors.InkMuted,
+            color = CatchupColors.Primary,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
         )
@@ -415,17 +456,20 @@ private fun TranscriptLineRow(line: TranscriptLine) {
 private fun SectionTitle(text: String) {
     Text(
         text = text,
-        color = CatchupColors.InkMuted,
+        color = CatchupColors.Primary,
         style = MaterialTheme.typography.titleMedium,
     )
 }
 
 @Composable
-private fun SimpleCard(content: @Composable ColumnScope.() -> Unit) {
+private fun SimpleCard(
+    containerColor: Color = CatchupColors.Surface,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = CatchupColors.Surface),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
         content = {
             Column(
                 modifier = Modifier.padding(18.dp),
@@ -462,13 +506,22 @@ private fun ActionButton(
 }
 
 @Composable
-private fun NumberedList(items: List<String>) {
+private fun BulletList(items: List<String>) {
     items.forEachIndexed { index, item ->
-        Text(
-            text = "${index + 1}. $item",
-            color = CatchupColors.Ink,
-            style = MaterialTheme.typography.bodyLarge,
-        )
+        Row(verticalAlignment = Alignment.Top) {
+            Text(
+                text = "•",
+                color = CatchupColors.Primary,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(end = 8.dp),
+            )
+            Text(
+                text = item,
+                color = CatchupColors.Ink,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f),
+            )
+        }
         if (index != items.lastIndex) {
             Spacer(Modifier.height(10.dp))
         }
@@ -496,7 +549,7 @@ private fun IndexQuoteCard(quote: IndexQuote) {
                 )
             }
             Text(
-                text = quote.change,
+                text = if (quote.isUp) "▲ ${quote.change}" else "▼ ${quote.change}",
                 color = if (quote.isUp) CatchupColors.Positive else CatchupColors.Danger,
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -531,7 +584,7 @@ private fun HistoryCard(
             Spacer(Modifier.height(8.dp))
             Text(
                 text = broadcast.topicLine,
-                color = CatchupColors.Secondary,
+                color = CatchupColors.Primary,
                 style = MaterialTheme.typography.titleMedium,
             )
         }
@@ -551,7 +604,7 @@ private fun TimelineRow(
     ) {
         Text(
             text = time,
-            color = CatchupColors.Secondary,
+            color = CatchupColors.Primary,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(end = 14.dp),
         )

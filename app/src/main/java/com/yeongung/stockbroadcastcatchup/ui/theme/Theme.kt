@@ -2,7 +2,7 @@ package com.yeongung.stockbroadcastcatchup.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -10,24 +10,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 object CatchupColors {
-    val Page = Color(0xFFF6F7F9)
-    val Surface = Color(0xFFFFFFFF)
-    val SurfaceMuted = Color(0xFFECEFF3)
-    val Ink = Color(0xFF14181F)
-    val InkMuted = Color(0xFF667085)
-    val Primary = Color(0xFF0F766E)
-    val Secondary = Color(0xFF2457A6)
-    val Danger = Color(0xFFB42318)
-    val Warning = Color(0xFFB7791F)
-    val Positive = Color(0xFF087443)
+    val Page = Color(0xFF071016)
+    val Surface = Color(0xFF101B24)
+    val SurfaceRaised = Color(0xFF142231)
+    val SurfaceMuted = Color(0xFF1D2B38)
+    val Ink = Color(0xFFF4F8FB)
+    val InkMuted = Color(0xFFA8B5C2)
+    val Primary = Color(0xFF20C7BE)
+    val PrimarySoft = Color(0xFF103C42)
+    val Secondary = Color(0xFF4EA5FF)
+    val Danger = Color(0xFFFF7A7A)
+    val Warning = Color(0xFFFFD166)
+    val Positive = Color(0xFF5CE1A8)
 }
 
-private val CatchupColorScheme = lightColorScheme(
+private val CatchupColorScheme = darkColorScheme(
     primary = CatchupColors.Primary,
     secondary = CatchupColors.Secondary,
     background = CatchupColors.Page,
     surface = CatchupColors.Surface,
-    onPrimary = Color.White,
+    onPrimary = Color(0xFF041313),
     onSecondary = Color.White,
     onBackground = CatchupColors.Ink,
     onSurface = CatchupColors.Ink,
