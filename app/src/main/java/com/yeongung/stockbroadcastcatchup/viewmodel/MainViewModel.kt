@@ -40,6 +40,10 @@ class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(createInitialState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
+    init {
+        collectTranscriptInput()
+    }
+
     fun showLive() {
         _uiState.update { it.copy(screen = AppScreen.Live) }
     }
@@ -107,6 +111,24 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private fun collectTranscriptInput() {
+        viewModelScope.launch {
+            catchupUseCase.transcriptFlow().collect { line ->
+                _uiState.update { state ->
+                    val nextTranscript = (listOf(line) + state.recentTranscript).take(MAX_RECENT_TRANSCRIPT_LINES)
+                    state.copy(
+                        listeningStatus = "자막 입력 중",
+                        elapsedLabel = line.time,
+                        currentTopic = catchupUseCase.inferCurrentTopic(nextTranscript),
+                        recentTranscript = nextTranscript,
+                        recentOneMinuteSummary = catchupUseCase.summarizeRecentTranscript(nextTranscript),
+                    )
+                }
+            }
+            _uiState.update { it.copy(listeningStatus = "자막 입력 완료") }
+        }
+    }
+
     private fun createInitialState(): MainUiState {
         val snapshot = catchupUseCase.loadCurrentSnapshot()
         return MainUiState(
@@ -119,5 +141,9 @@ class MainViewModel : ViewModel() {
             history = snapshot.history,
             selectedBroadcast = snapshot.history.firstOrNull(),
         )
+    }
+
+    private companion object {
+        const val MAX_RECENT_TRANSCRIPT_LINES = 3
     }
 }
