@@ -11,25 +11,26 @@ class FakeBroadcastRepository {
     fun elapsedLabel(): String = "00:12:34"
 
     fun currentTopic(): String =
-        "반도체 실적 기대와 금리 부담이 오늘 시장 흐름을 어떻게 바꾸는지 이야기하고 있어요."
+        "반도체, 엔비디아 실적, 금리 부담을 이야기하는 중입니다."
 
     fun recentTranscript(): List<TranscriptLine> = listOf(
-        TranscriptLine("00:12:31", "반도체 업종이 장중 강세를 이어가고 있습니다."),
-        TranscriptLine("00:12:26", "엔비디아 실적 기대가 국내 관련주에도 영향을 주는 모습입니다."),
-        TranscriptLine("00:12:21", "다만 금리 부담 때문에 성장주는 변동성이 커질 수 있습니다."),
+        TranscriptLine("00:12:31", "반도체 업종이 강세를 보이고 있어요."),
+        TranscriptLine("00:12:26", "엔비디아 실적이 시장 기대를 상회했습니다."),
+        TranscriptLine("00:12:21", "금리 부담이 지속되며 변동성이 커지고 있습니다."),
     )
 
     fun recentOneMinuteSummary(): List<String> = listOf(
-        "반도체 업종이 시장을 이끄는 흐름입니다.",
-        "엔비디아 실적 기대가 투자 심리에 영향을 주고 있습니다.",
-        "금리 부담 때문에 단기 변동성은 남아 있다는 설명이 나왔습니다.",
+        "반도체 업종이 강세를 보이며 시장 주도 흐름을 이끌고 있어요.",
+        "엔비디아 실적이 시장 기대를 상회해 투자 심리가 개선되었습니다.",
+        "금리 부담이 지속되며 변동성이 커지고 있습니다.",
+        "단기적으로는 실적과 금리 방향에 따라 등락이 이어질 수 있어요.",
     )
 
     fun currentIndices(): List<IndexQuote> = listOf(
-        IndexQuote("코스피", "2,655.42", "+0.68%", true),
-        IndexQuote("코스닥", "856.21", "+0.62%", true),
-        IndexQuote("나스닥 선물", "17,689.36", "+0.91%", true),
-        IndexQuote("원/달러", "1,382.10", "-0.21%", false),
+        IndexQuote("코스피", "2,655.42", "0.68%", true),
+        IndexQuote("코스닥", "856.21", "0.62%", true),
+        IndexQuote("나스닥", "17,689.36", "0.91%", true),
+        IndexQuote("USD/KRW", "1,382.10", "0.21%", false),
     )
 
     fun broadcastHistory(): List<BroadcastSession> = listOf(
