@@ -60,7 +60,13 @@ class MicInputSource(
             mainHandler.postDelayed(
                 {
                     if (!closed.get()) {
-                        recognizer.startListening(recognizerIntent)
+                        try {
+                            recognizer.startListening(recognizerIntent)
+                        } catch (error: SecurityException) {
+                            close(error)
+                        } catch (error: RuntimeException) {
+                            close(error)
+                        }
                     }
                 },
                 delayMillis,
@@ -97,8 +103,7 @@ class MicInputSource(
                 when (error) {
                     SpeechRecognizer.ERROR_NO_MATCH,
                     SpeechRecognizer.ERROR_SPEECH_TIMEOUT,
-                    SpeechRecognizer.ERROR_RECOGNIZER_BUSY,
-                    -> startListening(delayMillis = RESTART_DELAY_MILLIS)
+                    SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> startListening(delayMillis = RESTART_DELAY_MILLIS)
 
                     SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> close(
                         SecurityException("마이크 권한이 필요합니다."),
