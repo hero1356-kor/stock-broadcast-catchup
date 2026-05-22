@@ -28,10 +28,9 @@ android {
         applicationId = "com.yeongung.stockbroadcastcatchup"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.1.2"
+        versionCode = 4
+        versionName = "0.1.3"
 
-        buildConfigField("String", "BUILD_MARKER", buildConfigString("DBG_APK_CLOVA_UI_V2"))
         buildConfigField("String", "CLOVA_CSR_CLIENT_ID", buildConfigString(configValue("CLOVA_CSR_CLIENT_ID")))
         buildConfigField("String", "CLOVA_CSR_CLIENT_SECRET", buildConfigString(configValue("CLOVA_CSR_CLIENT_SECRET")))
         buildConfigField(
