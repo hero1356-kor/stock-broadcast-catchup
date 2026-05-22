@@ -1,6 +1,6 @@
 package com.yeongung.stockbroadcastcatchup.input
 
-import com.yeongung.stockbroadcastcatchup.BuildConfig
+import android.content.Context
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -15,24 +15,24 @@ interface SttClient {
 }
 
 class ClovaCsrSttClient(
-    private val clientId: String = BuildConfig.CLOVA_CSR_CLIENT_ID,
-    private val clientSecret: String = BuildConfig.CLOVA_CSR_CLIENT_SECRET,
-    private val endpoint: String = BuildConfig.CLOVA_CSR_ENDPOINT,
+    context: Context,
+    private val configStore: ClovaCsrConfigStore = ClovaCsrConfigStore(context),
 ) : SttClient {
     override val isConfigured: Boolean
-        get() = clientId.isNotBlank() && clientSecret.isNotBlank()
+        get() = configStore.current().isConfigured
 
     override suspend fun transcribe(wavAudio: ByteArray): String = withContext(Dispatchers.IO) {
-        check(isConfigured) { "CLOVA CSR 인증 정보가 설정되지 않았습니다." }
+        val config = configStore.current()
+        check(config.isConfigured) { "CLOVA CSR 인증 정보가 설정되지 않았습니다." }
 
-        val connection = (URL(endpointWithLanguage()).openConnection() as HttpURLConnection).apply {
+        val connection = (URL(endpointWithLanguage(config.endpoint)).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             connectTimeout = CONNECT_TIMEOUT_MILLIS
             readTimeout = READ_TIMEOUT_MILLIS
             doOutput = true
             setRequestProperty("Content-Type", "application/octet-stream")
-            setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId)
-            setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret)
+            setRequestProperty("X-NCP-APIGW-API-KEY-ID", config.clientId)
+            setRequestProperty("X-NCP-APIGW-API-KEY", config.clientSecret)
         }
 
         try {
@@ -52,7 +52,7 @@ class ClovaCsrSttClient(
         }
     }
 
-    private fun endpointWithLanguage(): String {
+    private fun endpointWithLanguage(endpoint: String): String {
         val normalizedEndpoint = endpoint.ifBlank { DEFAULT_ENDPOINT }
         if (normalizedEndpoint.contains("lang=")) return normalizedEndpoint
 
