@@ -29,7 +29,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -97,10 +95,6 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
                 state = state,
                 onStartStt = { startSttOrRequestPermission() },
                 onStopStt = viewModel::stopSttInput,
-                onClovaClientIdChange = viewModel::onClovaClientIdChanged,
-                onClovaClientSecretChange = viewModel::onClovaClientSecretChanged,
-                onSaveClovaCredentials = viewModel::saveClovaCredentials,
-                onShowClovaCredentialEditor = viewModel::showClovaCredentialEditor,
                 onRecentSummary = viewModel::showRecentSummary,
                 onCatchupAlerts = viewModel::showCatchupAlerts,
                 onFinish = viewModel::finishAndShowDetail,
@@ -147,10 +141,6 @@ private fun LiveScreen(
     state: MainUiState,
     onStartStt: () -> Unit,
     onStopStt: () -> Unit,
-    onClovaClientIdChange: (String) -> Unit,
-    onClovaClientSecretChange: (String) -> Unit,
-    onSaveClovaCredentials: () -> Unit,
-    onShowClovaCredentialEditor: () -> Unit,
     onRecentSummary: () -> Unit,
     onCatchupAlerts: () -> Unit,
     onFinish: () -> Unit,
@@ -168,14 +158,6 @@ private fun LiveScreen(
             hasMicrophonePermission = state.hasMicrophonePermission,
             isListening = state.isSttListening,
             statusLabel = state.sttStatusLabel,
-            isClovaConfigured = state.isClovaConfigured,
-            clovaClientIdInput = state.clovaClientIdInput,
-            clovaClientSecretInput = state.clovaClientSecretInput,
-            isClovaCredentialEditorVisible = state.isClovaCredentialEditorVisible,
-            onClovaClientIdChange = onClovaClientIdChange,
-            onClovaClientSecretChange = onClovaClientSecretChange,
-            onSaveClovaCredentials = onSaveClovaCredentials,
-            onShowClovaCredentialEditor = onShowClovaCredentialEditor,
             onStart = onStartStt,
             onStop = onStopStt,
         )
@@ -510,15 +492,9 @@ private fun LiveHeader(
 ) {
     Column {
         Text(
-            text = "주식방송 캐치업 DBG",
+            text = "주식방송 캐치업",
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.headlineLarge,
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            text = "검증 빌드 DBG_APK_CLOVA_UI_V2",
-            color = CatchupColors.InkMuted,
-            style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(Modifier.height(12.dp))
         StatusPill(status = status, elapsed = elapsed)
@@ -590,85 +566,27 @@ private fun SttControlCard(
     hasMicrophonePermission: Boolean,
     isListening: Boolean,
     statusLabel: String,
-    isClovaConfigured: Boolean,
-    clovaClientIdInput: String,
-    clovaClientSecretInput: String,
-    isClovaCredentialEditorVisible: Boolean,
-    onClovaClientIdChange: (String) -> Unit,
-    onClovaClientSecretChange: (String) -> Unit,
-    onSaveClovaCredentials: () -> Unit,
-    onShowClovaCredentialEditor: () -> Unit,
     onStart: () -> Unit,
     onStop: () -> Unit,
 ) {
-    val showCredentialEditor = !isClovaConfigured || isClovaCredentialEditorVisible
-
     SimpleCard(containerColor = CatchupColors.PrimarySoft) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            SectionTitle("TV 소리 텍스트화")
-            if (isClovaConfigured && !showCredentialEditor) {
-                TextButton(onClick = onShowClovaCredentialEditor) {
-                    Text(
-                        text = "키 수정",
-                        color = CatchupColors.Primary,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
-            }
-        }
+        SectionTitle("TV 소리 텍스트화")
         Spacer(Modifier.height(8.dp))
         Text(
             text = statusLabel,
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.bodyLarge,
         )
-
-        if (showCredentialEditor) {
-            Spacer(Modifier.height(12.dp))
-            OutlinedTextField(
-                value = clovaClientIdInput,
-                onValueChange = onClovaClientIdChange,
-                label = { Text("CLOVA CSR Client ID") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
-                value = clovaClientSecretInput,
-                onValueChange = onClovaClientSecretChange,
-                label = { Text("CLOVA CSR Client Secret") },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(10.dp))
-            ActionButton(
-                text = "CLOVA 키 저장",
-                containerColor = CatchupColors.SurfaceMuted,
-                contentColor = CatchupColors.Ink,
-                onClick = onSaveClovaCredentials,
-            )
-        }
-
         Spacer(Modifier.height(12.dp))
         ActionButton(
             text = when {
                 isListening -> "중지"
-                !isClovaConfigured -> "CLOVA 키 저장 후 시작"
-                hasMicrophonePermission -> "텍스트화 시작"
+                hasMicrophonePermission -> "녹음 시작"
                 else -> "마이크 권한 허용"
             },
             containerColor = if (isListening) CatchupColors.Secondary else CatchupColors.Primary,
             contentColor = if (isListening) Color.White else Color(0xFF041313),
-            onClick = when {
-                isListening -> onStop
-                !isClovaConfigured -> onShowClovaCredentialEditor
-                else -> onStart
-            },
+            onClick = if (isListening) onStop else onStart,
         )
     }
 }
