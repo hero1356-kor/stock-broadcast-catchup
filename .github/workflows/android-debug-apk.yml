@@ -52,7 +52,36 @@ jobs:
           fi
 
       - name: Build debug APK
+        env:
+          CLOVA_CSR_CLIENT_ID: ${{ secrets.CLOVA_CSR_CLIENT_ID }}
+          CLOVA_CSR_CLIENT_SECRET: ${{ secrets.CLOVA_CSR_CLIENT_SECRET }}
+          CLOVA_CSR_ENDPOINT: ${{ secrets.CLOVA_CSR_ENDPOINT }}
         run: gradle assembleDebug --no-daemon
+
+      - name: Verify debug APK strings
+        run: |
+          APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+          CHECK_DIR="build/apk-string-check"
+          rm -rf "$CHECK_DIR"
+          mkdir -p "$CHECK_DIR"
+          unzip -q "$APK_PATH" -d "$CHECK_DIR"
+          grep -R -a "녹음 시작" "$CHECK_DIR"
+          if grep -R -a "CLOVA 키 저장" "$CHECK_DIR"; then
+            echo "Credential save UI is still packaged in the APK" >&2
+            exit 1
+          fi
+          if grep -R -a "CLOVA CSR Client" "$CHECK_DIR"; then
+            echo "Credential input labels are still packaged in the APK" >&2
+            exit 1
+          fi
+          if grep -R -a "DBG_APK_CLOVA_UI_V2" "$CHECK_DIR"; then
+            echo "Old debug marker is still packaged in the APK" >&2
+            exit 1
+          fi
+          if grep -R -a "local.properties" "$CHECK_DIR"; then
+            echo "Legacy CLOVA setup error text is still packaged in the APK" >&2
+            exit 1
+          fi
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4

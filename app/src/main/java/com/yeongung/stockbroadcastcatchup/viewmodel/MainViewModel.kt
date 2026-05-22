@@ -1,21 +1,24 @@
 package com.yeongung.stockbroadcastcatchup.viewmodel
 
 import android.app.Application
+import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeongung.stockbroadcastcatchup.domain.BroadcastCatchupUseCase
 import com.yeongung.stockbroadcastcatchup.input.MicInputSource
-import com.yeongung.stockbroadcastcatchup.input.TextInputSource
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
 import com.yeongung.stockbroadcastcatchup.model.CatchupAlert
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
 import com.yeongung.stockbroadcastcatchup.model.TranscriptLine
+import java.util.Locale
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 enum class AppScreen {
@@ -39,9 +42,7 @@ data class MainUiState(
     val isRefreshingCurrentIndices: Boolean = false,
     val hasMicrophonePermission: Boolean = false,
     val isSttListening: Boolean = false,
-    val sttStatusLabel: String = "마이크 권한을 확인한 뒤 STT를 시작할 수 있습니다.",
-    val isDemoRunning: Boolean = false,
-    val demoStatusLabel: String = "앱 화면을 먼저 볼 수 있게 샘플 방송 자막을 재생할 수 있습니다.",
+    val sttStatusLabel: String = "TV 소리 텍스트화를 위해 마이크 권한이 필요합니다.",
     val catchupAlerts: List<CatchupAlert> = emptyList(),
     val history: List<BroadcastSession> = emptyList(),
     val selectedBroadcast: BroadcastSession? = null,
@@ -51,137 +52,73 @@ data class MainUiState(
 }
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val micUseCase = BroadcastCatchupUseCase(
+    private val catchupUseCase = BroadcastCatchupUseCase(
         inputSource = MicInputSource(application),
     )
-    private val demoUseCase = BroadcastCatchupUseCase(
-        inputSource = TextInputSource(millisecondsPerScriptSecond = DEMO_MILLISECONDS_PER_SCRIPT_SECOND),
-    )
-    private val catchupUseCase = micUseCase
     private var sttJob: Job? = null
-    private var demoJob: Job? = null
+    private var sttElapsedJob: Job? = null
 
     private val _uiState = MutableStateFlow(createInitialState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
-
-    init {
-        startDemoInput()
-    }
 
     fun setMicrophonePermission(granted: Boolean) {
         _uiState.update { state ->
             state.copy(
                 hasMicrophonePermission = granted,
-                sttStatusLabel = if (granted) {
-                    "STT를 시작할 준비가 됐습니다."
+                sttStatusLabel = if (state.isSttListening) {
+                    state.sttStatusLabel
                 } else {
-                    "마이크 권한이 필요합니다."
+                    sttReadyStatus(hasMicrophonePermission = granted)
                 },
-            )
-        }
-    }
-
-    fun startDemoInput() {
-        if (_uiState.value.isDemoRunning || demoJob?.isActive == true) return
-        stopSttInput(updateStatus = false)
-
-        demoJob = viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isDemoRunning = true,
-                    listeningStatus = "데모 재생 중",
-                    elapsedLabel = "00:00:00",
-                    currentTopic = "샘플 방송 자막을 재생하고 있습니다.",
-                    recentTranscript = emptyList(),
-                    recentOneMinuteSummary = listOf(
-                        "샘플 자막이 들어오면 최근 1분 요약이 갱신됩니다.",
-                        "STT 성공 여부와 상관없이 UI 흐름을 먼저 확인할 수 있습니다.",
-                    ),
-                    catchupAlerts = emptyList(),
-                    demoStatusLabel = "샘플 방송 자막을 재생 중입니다.",
-                    sttStatusLabel = "데모 재생 중에는 STT를 잠시 멈춥니다.",
-                )
-            }
-
-            demoUseCase.transcriptFlow()
-                .catch { error ->
-                    _uiState.update {
-                        it.copy(
-                            isDemoRunning = false,
-                            listeningStatus = "데모 오류",
-                            demoStatusLabel = error.message ?: "데모 자막을 재생하지 못했습니다.",
-                        )
-                    }
-                }
-                .collect { line ->
-                    applyTranscriptLine(line = line, useCase = demoUseCase) { state ->
-                        state.copy(
-                            listeningStatus = "데모 재생 중",
-                            demoStatusLabel = "샘플 자막이 요약에 반영됐습니다.",
-                        )
-                    }
-                }
-
-            _uiState.update {
-                it.copy(
-                    isDemoRunning = false,
-                    listeningStatus = "데모 완료",
-                    demoStatusLabel = "샘플 방송 자막 재생이 끝났습니다.",
-                )
-            }
-        }
-    }
-
-    fun stopDemoInput() {
-        demoJob?.cancel()
-        demoJob = null
-        _uiState.update {
-            it.copy(
-                isDemoRunning = false,
-                listeningStatus = "데모 중지",
-                demoStatusLabel = "데모 자막 재생이 중지됐습니다.",
             )
         }
     }
 
     fun startSttInput() {
         if (_uiState.value.isSttListening || sttJob?.isActive == true) return
-        stopDemoInputForStt()
+
         if (!_uiState.value.hasMicrophonePermission) {
             _uiState.update {
-                it.copy(sttStatusLabel = "마이크 권한을 허용하면 STT를 시작합니다.")
+                it.copy(sttStatusLabel = "마이크 권한을 허용하면 TV 소리 텍스트화를 시작합니다.")
             }
             return
         }
 
+        val startedAtMillis = SystemClock.elapsedRealtime()
         sttJob = viewModelScope.launch {
             _uiState.update {
                 it.copy(
                     isSttListening = true,
-                    listeningStatus = "STT 듣는 중",
-                    sttStatusLabel = "말소리를 듣고 있습니다.",
-                    demoStatusLabel = "STT 테스트 중에는 데모 자막이 멈춥니다.",
+                    listeningStatus = "텍스트화 중",
+                    elapsedLabel = formatElapsed(0L),
+                    sttStatusLabel = "TV 소리를 듣고 텍스트로 바꾸는 중입니다.",
                 )
             }
+            startSttElapsedCounter(startedAtMillis)
 
-            micUseCase.transcriptFlow()
-                .catch { error ->
-                    _uiState.update {
-                        it.copy(
-                            isSttListening = false,
-                            listeningStatus = "STT 오류",
-                            sttStatusLabel = error.message ?: "음성 인식을 시작하지 못했습니다.",
-                        )
+            try {
+                catchupUseCase.transcriptFlow()
+                    .catch { error ->
+                        stopSttElapsedCounter()
+                        _uiState.update {
+                            it.copy(
+                                isSttListening = false,
+                                listeningStatus = "텍스트화 오류",
+                                sttStatusLabel = error.message ?: "음성 인식을 시작하지 못했습니다.",
+                            )
+                        }
                     }
-                }
-                .collect { line ->
-                    applyTranscriptLine(line = line, useCase = micUseCase) { state ->
-                        state.copy(
-                            listeningStatus = "STT 듣는 중",
-                            sttStatusLabel = "인식된 문장을 요약에 반영했습니다.",
-                        )
+                    .collect { line ->
+                        applyTranscriptLine(line = line, useCase = catchupUseCase) { state ->
+                            state.copy(
+                                listeningStatus = "텍스트화 중",
+                                sttStatusLabel = "인식된 문장을 1분 요약에 반영했습니다.",
+                            )
+                        }
                     }
-                }
+            } finally {
+                stopSttElapsedCounter()
+            }
         }
     }
 
@@ -192,12 +129,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun stopSttInput(updateStatus: Boolean) {
         sttJob?.cancel()
         sttJob = null
+        stopSttElapsedCounter()
         _uiState.update {
             if (updateStatus) {
                 it.copy(
                     isSttListening = false,
-                    listeningStatus = "STT 중지",
-                    sttStatusLabel = "STT가 중지됐습니다.",
+                    listeningStatus = "텍스트화 중지",
+                    sttStatusLabel = "TV 소리 텍스트화가 중지됐습니다.",
                 )
             } else {
                 it.copy(isSttListening = false)
@@ -205,12 +143,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun stopDemoInputForStt() {
-        demoJob?.cancel()
-        demoJob = null
-        _uiState.update {
-            it.copy(isDemoRunning = false)
+    private fun startSttElapsedCounter(startedAtMillis: Long) {
+        stopSttElapsedCounter()
+        sttElapsedJob = viewModelScope.launch {
+            while (isActive) {
+                val elapsedMillis = SystemClock.elapsedRealtime() - startedAtMillis
+                _uiState.update { state ->
+                    if (state.isSttListening) {
+                        state.copy(elapsedLabel = formatElapsed(elapsedMillis))
+                    } else {
+                        state
+                    }
+                }
+                delay(1_000L)
+            }
         }
+    }
+
+    private fun stopSttElapsedCounter() {
+        sttElapsedJob?.cancel()
+        sttElapsedJob = null
     }
 
     private fun applyTranscriptLine(
@@ -322,7 +274,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        stopDemoInputForStt()
         stopSttInput(updateStatus = false)
         super.onCleared()
     }
@@ -338,12 +289,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             currentIndices = snapshot.currentIndices,
             history = snapshot.history,
             selectedBroadcast = snapshot.history.firstOrNull(),
+            sttStatusLabel = sttReadyStatus(hasMicrophonePermission = false),
         )
+    }
+
+    private fun sttReadyStatus(hasMicrophonePermission: Boolean): String = if (hasMicrophonePermission) {
+        "녹음 시작을 누르면 TV 소리 텍스트화를 시작합니다."
+    } else {
+        "TV 소리 텍스트화를 위해 마이크 권한이 필요합니다."
+    }
+
+    private fun formatElapsed(elapsedMillis: Long): String {
+        val totalSeconds = (elapsedMillis / 1_000L).coerceAtLeast(0L)
+        val hours = totalSeconds / 3_600L
+        val minutes = (totalSeconds % 3_600L) / 60L
+        val seconds = totalSeconds % 60L
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private companion object {
         const val MAX_RECENT_TRANSCRIPT_LINES = 12
         const val MAX_CATCHUP_ALERTS = 5
-        const val DEMO_MILLISECONDS_PER_SCRIPT_SECOND = 250L
     }
 }
