@@ -54,6 +54,16 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon
 
+      - name: Verify debug APK strings
+        run: |
+          APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+          grep -a "DBG_APK_CLOVA_UI_V2" "$APK_PATH"
+          grep -a "CLOVA 키 저장" "$APK_PATH"
+          if grep -a "local.properties" "$APK_PATH"; then
+            echo "Legacy CLOVA setup error text is still packaged in the APK" >&2
+            exit 1
+          fi
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
