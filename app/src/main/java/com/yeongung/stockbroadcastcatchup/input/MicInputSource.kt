@@ -17,6 +17,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -27,31 +29,32 @@ class MicInputSource(
     private val repository: FakeBroadcastRepository = FakeBroadcastRepository(),
     private val sttClient: SttClient = ClovaCsrSttClient(context),
 ) : BroadcastInputSource {
+    private val fallbackInputSource = AndroidSpeechRecognizerInputSource(context, repository)
+
     override val type: BroadcastInputSourceType = BroadcastInputSourceType.MICROPHONE
 
     override fun currentSnapshot(): BroadcastInputSnapshot = BroadcastInputSnapshot(
         listeningStatus = "STT 준비",
         elapsedLabel = "00:00:00",
-        currentTopic = "TV 소리를 8초 단위로 녹음해 텍스트화합니다.",
+        currentTopic = "녹음 시작을 누르면 TV 소리를 텍스트화합니다.",
         recentTranscript = emptyList(),
         recentOneMinuteSummary = listOf(
             "텍스트화가 시작되면 최근 1분 방송 흐름을 바로 정리합니다.",
-            "Android 기본 음성 인식 대신 원본 오디오 조각을 STT 엔진으로 보내는 방식입니다.",
+            "TV 소리를 우선 클라우드 STT로 시도하고, 설정이 없거나 실패하면 기기 내장 STT로 바로 전환합니다.",
         ),
         currentIndices = repository.currentIndices(),
         history = repository.broadcastHistory(),
     )
 
-    override fun transcriptFlow(): Flow<TranscriptLine> = callbackFlow {
-        if (!sttClient.isConfigured) {
-            close(
-                IllegalStateException(
-                    "CLOVA CSR 키를 앱 화면에서 먼저 저장해주세요.",
-                ),
-            )
-            return@callbackFlow
+    override fun transcriptFlow(): Flow<TranscriptLine> = if (sttClient.isConfigured) {
+        clovaTranscriptFlow().catch {
+            fallbackInputSource.transcriptFlow().collect { line -> emit(line) }
         }
+    } else {
+        fallbackInputSource.transcriptFlow()
+    }
 
+    private fun clovaTranscriptFlow(): Flow<TranscriptLine> = callbackFlow {
         val startMillis = SystemClock.elapsedRealtime()
         val chunkChannel = Channel<RecordedAudioChunk>(capacity = CHUNK_QUEUE_CAPACITY)
         var audioRecord: AudioRecord? = null
@@ -74,7 +77,7 @@ class MicInputSource(
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Exception) {
-                close(IllegalStateException("TV 소리 전사 요청에 실패했습니다: ${error.message}", error))
+                close(IllegalStateException("클라우드 STT 요청에 실패했습니다. 기기 내장 STT로 전환합니다.", error))
             }
         }
 
