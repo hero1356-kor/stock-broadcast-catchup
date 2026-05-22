@@ -47,12 +47,16 @@ class MicInputSource(
         val mainHandler = Handler(Looper.getMainLooper())
         val closed = AtomicBoolean(false)
         val startMillis = SystemClock.elapsedRealtime()
+        var lastEmittedText = ""
         val recognizer = SpeechRecognizer.createSpeechRecognizer(appContext)
         val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.KOREA.toLanguageTag())
-            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, MINIMUM_LISTENING_MILLIS)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, POSSIBLY_COMPLETE_SILENCE_MILLIS)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, COMPLETE_SILENCE_MILLIS)
         }
 
         fun startListening(delayMillis: Long = 0L) {
@@ -73,37 +77,53 @@ class MicInputSource(
             )
         }
 
+        fun emitTranscript(text: String?) {
+            val normalizedText = text
+                ?.trim()
+                ?.replace(Regex("\\s+"), " ")
+                ?: return
+
+            if (normalizedText.length < MIN_TRANSCRIPT_TEXT_LENGTH || normalizedText == lastEmittedText) {
+                return
+            }
+
+            lastEmittedText = normalizedText
+            trySend(
+                TranscriptLine(
+                    time = formatElapsed(SystemClock.elapsedRealtime() - startMillis),
+                    text = normalizedText,
+                ),
+            )
+        }
+
+        fun firstRecognitionText(results: Bundle?): String? = results
+            ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+            ?.firstOrNull()
+
         recognizer.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) = Unit
             override fun onBeginningOfSpeech() = Unit
             override fun onRmsChanged(rmsdB: Float) = Unit
             override fun onBufferReceived(buffer: ByteArray?) = Unit
             override fun onEndOfSpeech() = Unit
-            override fun onPartialResults(partialResults: Bundle?) = Unit
             override fun onEvent(eventType: Int, params: Bundle?) = Unit
 
-            override fun onResults(results: Bundle?) {
-                val text = results
-                    ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    ?.firstOrNull()
-                    ?.trim()
+            override fun onPartialResults(partialResults: Bundle?) {
+                emitTranscript(firstRecognitionText(partialResults))
+            }
 
-                if (!text.isNullOrBlank()) {
-                    trySend(
-                        TranscriptLine(
-                            time = formatElapsed(SystemClock.elapsedRealtime() - startMillis),
-                            text = text,
-                        ),
-                    )
-                }
+            override fun onResults(results: Bundle?) {
+                emitTranscript(firstRecognitionText(results))
                 startListening(delayMillis = RESTART_DELAY_MILLIS)
             }
 
             override fun onError(error: Int) {
                 when (error) {
                     SpeechRecognizer.ERROR_NO_MATCH,
-                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT,
-                    SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> startListening(delayMillis = RESTART_DELAY_MILLIS)
+                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> startListening(delayMillis = RESTART_DELAY_MILLIS)
+
+                    SpeechRecognizer.ERROR_RECOGNIZER_BUSY,
+                    SpeechRecognizer.ERROR_TOO_MANY_REQUESTS -> startListening(delayMillis = BUSY_RESTART_DELAY_MILLIS)
 
                     SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> close(
                         SecurityException("마이크 권한이 필요합니다."),
@@ -142,6 +162,11 @@ class MicInputSource(
     }
 
     private companion object {
+        const val MIN_TRANSCRIPT_TEXT_LENGTH = 2
+        const val MINIMUM_LISTENING_MILLIS = 10_000
+        const val POSSIBLY_COMPLETE_SILENCE_MILLIS = 1_500
+        const val COMPLETE_SILENCE_MILLIS = 2_500
         const val RESTART_DELAY_MILLIS = 350L
+        const val BUSY_RESTART_DELAY_MILLIS = 1_000L
     }
 }
