@@ -162,6 +162,14 @@ private fun LiveScreen(
             onStop = onStopStt,
         )
 
+        Spacer(Modifier.height(10.dp))
+        ActionButton(
+            text = "방금 1분 요약",
+            containerColor = CatchupColors.Primary,
+            contentColor = Color(0xFF041313),
+            onClick = onRecentSummary,
+        )
+
         Spacer(Modifier.height(18.dp))
         SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
             SectionTitle("지금 무슨 얘기?")
@@ -204,13 +212,6 @@ private fun LiveScreen(
         }
 
         Spacer(Modifier.height(20.dp))
-        ActionButton(
-            text = "방금 1분 요약",
-            containerColor = CatchupColors.Primary,
-            contentColor = Color(0xFF041313),
-            onClick = onRecentSummary,
-        )
-        Spacer(Modifier.height(10.dp))
         ActionButton(
             text = "캐치업 알림 보기",
             containerColor = CatchupColors.SurfaceMuted,
