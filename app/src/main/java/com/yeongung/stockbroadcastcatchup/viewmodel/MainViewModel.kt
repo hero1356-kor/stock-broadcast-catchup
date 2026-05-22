@@ -1,6 +1,7 @@
 package com.yeongung.stockbroadcastcatchup.viewmodel
 
 import android.app.Application
+import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeongung.stockbroadcastcatchup.domain.BroadcastCatchupUseCase
@@ -10,12 +11,15 @@ import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
 import com.yeongung.stockbroadcastcatchup.model.CatchupAlert
 import com.yeongung.stockbroadcastcatchup.model.IndexQuote
 import com.yeongung.stockbroadcastcatchup.model.TranscriptLine
+import java.util.Locale
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 enum class AppScreen {
@@ -59,6 +63,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     )
     private val catchupUseCase = micUseCase
     private var sttJob: Job? = null
+    private var sttElapsedJob: Job? = null
     private var demoJob: Job? = null
 
     private val _uiState = MutableStateFlow(createInitialState())
@@ -154,34 +159,42 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
+        val startedAtMillis = SystemClock.elapsedRealtime()
         sttJob = viewModelScope.launch {
             _uiState.update {
                 it.copy(
                     isSttListening = true,
                     listeningStatus = "STT 듣는 중",
+                    elapsedLabel = formatElapsed(0L),
                     sttStatusLabel = "말소리를 듣고 있습니다.",
                     demoStatusLabel = "STT 테스트 중에는 데모 자막이 멈춥니다.",
                 )
             }
+            startSttElapsedCounter(startedAtMillis)
 
-            micUseCase.transcriptFlow()
-                .catch { error ->
-                    _uiState.update {
-                        it.copy(
-                            isSttListening = false,
-                            listeningStatus = "STT 오류",
-                            sttStatusLabel = error.message ?: "음성 인식을 시작하지 못했습니다.",
-                        )
+            try {
+                micUseCase.transcriptFlow()
+                    .catch { error ->
+                        stopSttElapsedCounter()
+                        _uiState.update {
+                            it.copy(
+                                isSttListening = false,
+                                listeningStatus = "STT 오류",
+                                sttStatusLabel = error.message ?: "음성 인식을 시작하지 못했습니다.",
+                            )
+                        }
                     }
-                }
-                .collect { line ->
-                    applyTranscriptLine(line = line, useCase = micUseCase) { state ->
-                        state.copy(
-                            listeningStatus = "STT 듣는 중",
-                            sttStatusLabel = "인식된 문장을 요약에 반영했습니다.",
-                        )
+                    .collect { line ->
+                        applyTranscriptLine(line = line, useCase = micUseCase) { state ->
+                            state.copy(
+                                listeningStatus = "STT 듣는 중",
+                                sttStatusLabel = "인식된 문장을 요약에 반영했습니다.",
+                            )
+                        }
                     }
-                }
+            } finally {
+                stopSttElapsedCounter()
+            }
         }
     }
 
@@ -192,6 +205,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun stopSttInput(updateStatus: Boolean) {
         sttJob?.cancel()
         sttJob = null
+        stopSttElapsedCounter()
         _uiState.update {
             if (updateStatus) {
                 it.copy(
@@ -203,6 +217,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 it.copy(isSttListening = false)
             }
         }
+    }
+
+    private fun startSttElapsedCounter(startedAtMillis: Long) {
+        stopSttElapsedCounter()
+        sttElapsedJob = viewModelScope.launch {
+            while (isActive) {
+                val elapsedMillis = SystemClock.elapsedRealtime() - startedAtMillis
+                _uiState.update { state ->
+                    if (state.isSttListening) {
+                        state.copy(elapsedLabel = formatElapsed(elapsedMillis))
+                    } else {
+                        state
+                    }
+                }
+                delay(1_000L)
+            }
+        }
+    }
+
+    private fun stopSttElapsedCounter() {
+        sttElapsedJob?.cancel()
+        sttElapsedJob = null
     }
 
     private fun stopDemoInputForStt() {
@@ -339,6 +375,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             history = snapshot.history,
             selectedBroadcast = snapshot.history.firstOrNull(),
         )
+    }
+
+    private fun formatElapsed(elapsedMillis: Long): String {
+        val totalSeconds = (elapsedMillis / 1_000L).coerceAtLeast(0L)
+        val hours = totalSeconds / 3_600L
+        val minutes = (totalSeconds % 3_600L) / 60L
+        val seconds = totalSeconds % 60L
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     private companion object {
