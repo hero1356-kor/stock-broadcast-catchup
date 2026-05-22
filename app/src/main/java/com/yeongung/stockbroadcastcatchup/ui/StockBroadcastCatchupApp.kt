@@ -29,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -95,6 +97,10 @@ fun StockBroadcastCatchupApp(viewModel: MainViewModel = viewModel()) {
                 state = state,
                 onStartStt = { startSttOrRequestPermission() },
                 onStopStt = viewModel::stopSttInput,
+                onClovaClientIdChange = viewModel::onClovaClientIdChanged,
+                onClovaClientSecretChange = viewModel::onClovaClientSecretChanged,
+                onSaveClovaCredentials = viewModel::saveClovaCredentials,
+                onShowClovaCredentialEditor = viewModel::showClovaCredentialEditor,
                 onRecentSummary = viewModel::showRecentSummary,
                 onCatchupAlerts = viewModel::showCatchupAlerts,
                 onFinish = viewModel::finishAndShowDetail,
@@ -141,6 +147,10 @@ private fun LiveScreen(
     state: MainUiState,
     onStartStt: () -> Unit,
     onStopStt: () -> Unit,
+    onClovaClientIdChange: (String) -> Unit,
+    onClovaClientSecretChange: (String) -> Unit,
+    onSaveClovaCredentials: () -> Unit,
+    onShowClovaCredentialEditor: () -> Unit,
     onRecentSummary: () -> Unit,
     onCatchupAlerts: () -> Unit,
     onFinish: () -> Unit,
@@ -158,6 +168,14 @@ private fun LiveScreen(
             hasMicrophonePermission = state.hasMicrophonePermission,
             isListening = state.isSttListening,
             statusLabel = state.sttStatusLabel,
+            isClovaConfigured = state.isClovaConfigured,
+            clovaClientIdInput = state.clovaClientIdInput,
+            clovaClientSecretInput = state.clovaClientSecretInput,
+            isClovaCredentialEditorVisible = state.isClovaCredentialEditorVisible,
+            onClovaClientIdChange = onClovaClientIdChange,
+            onClovaClientSecretChange = onClovaClientSecretChange,
+            onSaveClovaCredentials = onSaveClovaCredentials,
+            onShowClovaCredentialEditor = onShowClovaCredentialEditor,
             onStart = onStartStt,
             onStop = onStopStt,
         )
@@ -247,21 +265,22 @@ private fun RecentSummaryScreen(
             BulletList(items = state.recentOneMinuteSummary)
         }
 
-        Spacer(Modifier.height(14.dp))
-        SimpleCard(containerColor = CatchupColors.PrimarySoft) {
-            Text(
-                text = "일부 구간은 소음으로 누락될 수 있어요",
-                color = CatchupColors.Ink,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-
         Spacer(Modifier.height(18.dp))
         SectionTitle("방금 지나간 자막")
         Spacer(Modifier.height(8.dp))
-        state.recentTranscript.forEach { line ->
-            TranscriptLineRow(line = line)
-            Spacer(Modifier.height(8.dp))
+        if (state.recentTranscript.isEmpty()) {
+            SimpleCard {
+                Text(
+                    text = "아직 텍스트화된 문장이 없습니다.",
+                    color = CatchupColors.Ink,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        } else {
+            state.recentTranscript.forEach { line ->
+                TranscriptLineRow(line = line)
+                Spacer(Modifier.height(8.dp))
+            }
         }
 
         Spacer(Modifier.height(20.dp))
@@ -338,8 +357,8 @@ private fun CatchupAlertsScreen(
             )
         }
 
+        Spacer(Modifier.height(12.dp))
         if (alerts.isEmpty()) {
-            Spacer(Modifier.height(12.dp))
             SimpleCard {
                 Text(
                     text = "방송에서 중요한 키워드가 나오면 여기에 모아둘게요.",
@@ -348,7 +367,6 @@ private fun CatchupAlertsScreen(
                 )
             }
         } else {
-            Spacer(Modifier.height(12.dp))
             alerts.forEach { alert ->
                 CatchupAlertCard(alert = alert)
                 Spacer(Modifier.height(10.dp))
@@ -455,21 +473,6 @@ private fun BroadcastDetailScreen(
         SimpleCard {
             broadcast.timeline.forEach { item ->
                 TimelineRow(time = item.time, title = item.title)
-            }
-        }
-
-        Spacer(Modifier.height(18.dp))
-        SectionTitle("저신뢰 구간")
-        Spacer(Modifier.height(8.dp))
-        SimpleCard {
-            if (broadcast.lowConfidenceRanges.isEmpty()) {
-                Text(
-                    text = "특별히 낮게 인식된 구간이 없습니다.",
-                    color = CatchupColors.Ink,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            } else {
-                BulletList(items = broadcast.lowConfidenceRanges)
             }
         }
     }
@@ -581,27 +584,85 @@ private fun SttControlCard(
     hasMicrophonePermission: Boolean,
     isListening: Boolean,
     statusLabel: String,
+    isClovaConfigured: Boolean,
+    clovaClientIdInput: String,
+    clovaClientSecretInput: String,
+    isClovaCredentialEditorVisible: Boolean,
+    onClovaClientIdChange: (String) -> Unit,
+    onClovaClientSecretChange: (String) -> Unit,
+    onSaveClovaCredentials: () -> Unit,
+    onShowClovaCredentialEditor: () -> Unit,
     onStart: () -> Unit,
     onStop: () -> Unit,
 ) {
+    val showCredentialEditor = !isClovaConfigured || isClovaCredentialEditorVisible
+
     SimpleCard(containerColor = CatchupColors.PrimarySoft) {
-        SectionTitle("TV 소리 텍스트화")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SectionTitle("TV 소리 텍스트화")
+            if (isClovaConfigured && !showCredentialEditor) {
+                TextButton(onClick = onShowClovaCredentialEditor) {
+                    Text(
+                        text = "키 수정",
+                        color = CatchupColors.Primary,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+        }
         Spacer(Modifier.height(8.dp))
         Text(
             text = statusLabel,
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.bodyLarge,
         )
+
+        if (showCredentialEditor) {
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = clovaClientIdInput,
+                onValueChange = onClovaClientIdChange,
+                label = { Text("CLOVA CSR Client ID") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(8.dp))
+            OutlinedTextField(
+                value = clovaClientSecretInput,
+                onValueChange = onClovaClientSecretChange,
+                label = { Text("CLOVA CSR Client Secret") },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(10.dp))
+            ActionButton(
+                text = "CLOVA 키 저장",
+                containerColor = CatchupColors.SurfaceMuted,
+                contentColor = CatchupColors.Ink,
+                onClick = onSaveClovaCredentials,
+            )
+        }
+
         Spacer(Modifier.height(12.dp))
         ActionButton(
             text = when {
                 isListening -> "중지"
+                !isClovaConfigured -> "CLOVA 키 저장 후 시작"
                 hasMicrophonePermission -> "텍스트화 시작"
                 else -> "마이크 권한 허용"
             },
             containerColor = if (isListening) CatchupColors.Secondary else CatchupColors.Primary,
             contentColor = if (isListening) Color.White else Color(0xFF041313),
-            onClick = if (isListening) onStop else onStart,
+            onClick = when {
+                isListening -> onStop
+                !isClovaConfigured -> onShowClovaCredentialEditor
+                else -> onStart
+            },
         )
     }
 }
@@ -673,13 +734,21 @@ private fun TranscriptPreview(lines: List<TranscriptLine>) {
     SimpleCard {
         SectionTitle("실시간 자막")
         Spacer(Modifier.height(10.dp))
-        lines.forEachIndexed { index, line ->
-            TranscriptLineRow(line = line)
-            if (index != lines.lastIndex) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    color = CatchupColors.SurfaceMuted,
-                )
+        if (lines.isEmpty()) {
+            Text(
+                text = "TV 소리가 텍스트화되면 여기에 표시됩니다.",
+                color = CatchupColors.InkMuted,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        } else {
+            lines.forEachIndexed { index, line ->
+                TranscriptLineRow(line = line)
+                if (index != lines.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        color = CatchupColors.SurfaceMuted,
+                    )
+                }
             }
         }
     }
@@ -792,6 +861,15 @@ private fun ActionButton(
 
 @Composable
 private fun BulletList(items: List<String>) {
+    if (items.isEmpty()) {
+        Text(
+            text = "아직 요약할 자막이 없습니다.",
+            color = CatchupColors.Ink,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        return
+    }
+
     items.forEachIndexed { index, item ->
         Row(verticalAlignment = Alignment.Top) {
             Text(
