@@ -163,13 +163,6 @@ private fun LiveScreen(
         )
 
         Spacer(Modifier.height(10.dp))
-        MicrophoneQualityCheckCard(
-            hasMicrophonePermission = state.hasMicrophonePermission,
-            isListening = state.isSttListening,
-            recentTranscriptCount = state.recentTranscript.size,
-        )
-
-        Spacer(Modifier.height(10.dp))
         ActionButton(
             text = "방금 1분 요약",
             containerColor = CatchupColors.Primary,
@@ -592,7 +585,7 @@ private fun SttControlCard(
     onStop: () -> Unit,
 ) {
     SimpleCard(containerColor = CatchupColors.PrimarySoft) {
-        SectionTitle("STT")
+        SectionTitle("TV 소리 텍스트화")
         Spacer(Modifier.height(8.dp))
         Text(
             text = statusLabel,
@@ -602,46 +595,13 @@ private fun SttControlCard(
         Spacer(Modifier.height(12.dp))
         ActionButton(
             text = when {
-                isListening -> "STT 중지"
-                hasMicrophonePermission -> "STT 시작"
+                isListening -> "중지"
+                hasMicrophonePermission -> "텍스트화 시작"
                 else -> "마이크 권한 허용"
             },
             containerColor = if (isListening) CatchupColors.Secondary else CatchupColors.Primary,
             contentColor = if (isListening) Color.White else Color(0xFF041313),
             onClick = if (isListening) onStop else onStart,
-        )
-    }
-}
-
-@Composable
-private fun MicrophoneQualityCheckCard(
-    hasMicrophonePermission: Boolean,
-    isListening: Boolean,
-    recentTranscriptCount: Int,
-) {
-    val statusText = when {
-        !hasMicrophonePermission -> "마이크 권한을 먼저 허용해야 TV 소리 테스트를 할 수 있어요."
-        isListening && recentTranscriptCount == 0 -> "듣는 중인데 자막이 안 뜨면 TV 소리가 멀거나 작게 들어오는 상태일 수 있어요."
-        isListening -> "자막이 들어오고 있으면 마이크 입력은 정상입니다. TV 소리도 같은 위치에서 테스트해보세요."
-        else -> "TV 소리 테스트 전에 STT 시작을 누르고 아래 조건을 확인해보세요."
-    }
-
-    SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
-        SectionTitle("마이크 품질 체크")
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = statusText,
-            color = CatchupColors.Ink,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Spacer(Modifier.height(12.dp))
-        BulletList(
-            items = listOf(
-                "폰을 TV 스피커 30cm~1m 근처에 둬보세요.",
-                "TV 볼륨은 중간 이상으로, 너무 크면 왜곡될 수 있어요.",
-                "배경음악/효과음이 적고 말소리가 또렷한 장면으로 먼저 테스트하세요.",
-                "계속 안 잡히면 다음 단계는 내부 오디오 캡처 실험입니다.",
-            ),
         )
     }
 }
