@@ -25,11 +25,8 @@ import kotlin.math.max
 class MicInputSource(
     context: Context,
     private val repository: FakeBroadcastRepository = FakeBroadcastRepository(),
-    private val sttClient: SttClient = ClovaCsrSttClient(),
+    private val sttClient: SttClient = ClovaCsrSttClient(context),
 ) : BroadcastInputSource {
-    @Suppress("unused")
-    private val appContext = context.applicationContext
-
     override val type: BroadcastInputSourceType = BroadcastInputSourceType.MICROPHONE
 
     override fun currentSnapshot(): BroadcastInputSnapshot = BroadcastInputSnapshot(
@@ -49,8 +46,7 @@ class MicInputSource(
         if (!sttClient.isConfigured) {
             close(
                 IllegalStateException(
-                    "CLOVA CSR 키가 설정되지 않았습니다. local.properties 또는 환경변수에 " +
-                        "CLOVA_CSR_CLIENT_ID, CLOVA_CSR_CLIENT_SECRET을 넣어주세요.",
+                    "CLOVA CSR 키를 앱 화면에서 먼저 저장해주세요.",
                 ),
             )
             return@callbackFlow
