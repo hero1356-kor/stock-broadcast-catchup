@@ -5,6 +5,7 @@ import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeongung.stockbroadcastcatchup.domain.BroadcastCatchupUseCase
+import com.yeongung.stockbroadcastcatchup.input.ClovaCsrConfigStore
 import com.yeongung.stockbroadcastcatchup.input.MicInputSource
 import com.yeongung.stockbroadcastcatchup.model.BroadcastSession
 import com.yeongung.stockbroadcastcatchup.model.CatchupAlert
@@ -42,7 +43,11 @@ data class MainUiState(
     val isRefreshingCurrentIndices: Boolean = false,
     val hasMicrophonePermission: Boolean = false,
     val isSttListening: Boolean = false,
-    val sttStatusLabel: String = "마이크 권한을 확인한 뒤 TV 소리 텍스트화를 시작할 수 있습니다.",
+    val sttStatusLabel: String = "CLOVA CSR 키를 저장한 뒤 TV 소리 텍스트화를 시작할 수 있습니다.",
+    val isClovaConfigured: Boolean = false,
+    val clovaClientIdInput: String = "",
+    val clovaClientSecretInput: String = "",
+    val isClovaCredentialEditorVisible: Boolean = true,
     val catchupAlerts: List<CatchupAlert> = emptyList(),
     val history: List<BroadcastSession> = emptyList(),
     val selectedBroadcast: BroadcastSession? = null,
@@ -52,6 +57,7 @@ data class MainUiState(
 }
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
+    private val clovaConfigStore = ClovaCsrConfigStore(application)
     private val catchupUseCase = BroadcastCatchupUseCase(
         inputSource = MicInputSource(application),
     )
@@ -62,20 +68,81 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     fun setMicrophonePermission(granted: Boolean) {
+        val isClovaConfigured = clovaConfigStore.current().isConfigured
         _uiState.update { state ->
             state.copy(
                 hasMicrophonePermission = granted,
-                sttStatusLabel = if (granted) {
-                    "TV 소리를 텍스트화할 준비가 됐습니다."
-                } else {
-                    "TV 소리 텍스트화를 위해 마이크 권한이 필요합니다."
-                },
+                isClovaConfigured = isClovaConfigured,
+                sttStatusLabel = sttReadyStatus(
+                    hasMicrophonePermission = granted,
+                    isClovaConfigured = isClovaConfigured,
+                ),
+            )
+        }
+    }
+
+    fun onClovaClientIdChanged(value: String) {
+        _uiState.update { it.copy(clovaClientIdInput = value) }
+    }
+
+    fun onClovaClientSecretChanged(value: String) {
+        _uiState.update { it.copy(clovaClientSecretInput = value) }
+    }
+
+    fun showClovaCredentialEditor() {
+        _uiState.update { it.copy(isClovaCredentialEditorVisible = true) }
+    }
+
+    fun saveClovaCredentials() {
+        val state = _uiState.value
+        val clientId = state.clovaClientIdInput.trim()
+        val clientSecret = state.clovaClientSecretInput.trim()
+
+        if (clientId.isBlank() || clientSecret.isBlank()) {
+            _uiState.update {
+                it.copy(
+                    isClovaConfigured = false,
+                    isClovaCredentialEditorVisible = true,
+                    sttStatusLabel = "CLOVA CSR Client ID와 Client Secret을 모두 입력해주세요.",
+                )
+            }
+            return
+        }
+
+        clovaConfigStore.save(
+            clientId = clientId,
+            clientSecret = clientSecret,
+        )
+
+        _uiState.update {
+            it.copy(
+                isClovaConfigured = true,
+                clovaClientIdInput = clientId,
+                clovaClientSecretInput = clientSecret,
+                isClovaCredentialEditorVisible = false,
+                sttStatusLabel = sttReadyStatus(
+                    hasMicrophonePermission = it.hasMicrophonePermission,
+                    isClovaConfigured = true,
+                ),
             )
         }
     }
 
     fun startSttInput() {
         if (_uiState.value.isSttListening || sttJob?.isActive == true) return
+
+        val isClovaConfigured = clovaConfigStore.current().isConfigured
+        if (!isClovaConfigured) {
+            _uiState.update {
+                it.copy(
+                    isClovaConfigured = false,
+                    isClovaCredentialEditorVisible = true,
+                    sttStatusLabel = "CLOVA CSR 키를 먼저 저장하면 TV 소리 텍스트화를 시작합니다.",
+                )
+            }
+            return
+        }
+
         if (!_uiState.value.hasMicrophonePermission) {
             _uiState.update {
                 it.copy(sttStatusLabel = "마이크 권한을 허용하면 TV 소리 텍스트화를 시작합니다.")
@@ -88,9 +155,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.update {
                 it.copy(
                     isSttListening = true,
+                    isClovaConfigured = true,
                     listeningStatus = "텍스트화 중",
                     elapsedLabel = formatElapsed(0L),
-                    sttStatusLabel = "TV 소리를 듣고 텍스트로 바꾸는 중입니다.",
+                    sttStatusLabel = "TV 소리를 8초씩 녹음해 텍스트로 바꾸는 중입니다.",
                 )
             }
             startSttElapsedCounter(startedAtMillis)
@@ -279,6 +347,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun createInitialState(): MainUiState {
         val snapshot = catchupUseCase.loadCurrentSnapshot()
+        val clovaConfig = clovaConfigStore.current()
         return MainUiState(
             listeningStatus = snapshot.listeningStatus,
             elapsedLabel = snapshot.elapsedLabel,
@@ -288,7 +357,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             currentIndices = snapshot.currentIndices,
             history = snapshot.history,
             selectedBroadcast = snapshot.history.firstOrNull(),
+            sttStatusLabel = sttReadyStatus(
+                hasMicrophonePermission = false,
+                isClovaConfigured = clovaConfig.isConfigured,
+            ),
+            isClovaConfigured = clovaConfig.isConfigured,
+            clovaClientIdInput = clovaConfig.clientId,
+            clovaClientSecretInput = clovaConfig.clientSecret,
+            isClovaCredentialEditorVisible = !clovaConfig.isConfigured,
         )
+    }
+
+    private fun sttReadyStatus(
+        hasMicrophonePermission: Boolean,
+        isClovaConfigured: Boolean,
+    ): String = when {
+        !isClovaConfigured -> "CLOVA CSR 키를 저장하면 TV 소리 텍스트화를 시작할 수 있습니다."
+        hasMicrophonePermission -> "TV 소리를 텍스트화할 준비가 됐습니다."
+        else -> "TV 소리 텍스트화를 위해 마이크 권한이 필요합니다."
     }
 
     private fun formatElapsed(elapsedMillis: Long): String {
