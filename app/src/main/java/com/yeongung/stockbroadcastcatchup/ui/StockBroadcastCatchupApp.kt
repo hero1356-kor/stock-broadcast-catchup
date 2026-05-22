@@ -510,9 +510,15 @@ private fun LiveHeader(
 ) {
     Column {
         Text(
-            text = "주식방송 캐치업",
+            text = "주식방송 캐치업 DBG",
             color = CatchupColors.Ink,
             style = MaterialTheme.typography.headlineLarge,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "검증 빌드 DBG_APK_CLOVA_UI_V2",
+            color = CatchupColors.InkMuted,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(Modifier.height(12.dp))
         StatusPill(status = status, elapsed = elapsed)
