@@ -276,8 +276,8 @@ class MicInputSource(
     private companion object {
         const val SAMPLE_RATE_HZ = 16_000
         const val CHANNEL_COUNT = 1
-        const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
-        const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
+        val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
+        val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
         const val BITS_PER_SAMPLE = 16
         const val BYTES_PER_SAMPLE = 2
         const val PCM_FORMAT = 1
