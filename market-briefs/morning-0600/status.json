@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "date_kst": "2026-09-03",
-  "ready": false,
-  "generated_at_kst": "2026-09-03T05:30:03+09:00",
-  "data_cutoff_kst": null,
-  "market_state": "generating",
-  "txt_url": null,
-  "html_url": null,
+  "ready": true,
+  "generated_at_kst": "2026-09-03T05:34:29+09:00",
+  "data_cutoff_kst": "2026-09-03T05:30:00+09:00",
+  "market_state": "closed",
+  "txt_url": "https://raw.githubusercontent.com/hero1356-kor/stock-broadcast-catchup/9e23efdf5c4217859ed503885f09d18808fc6010/market-briefs/morning-0600/2026-09-03-0530.txt",
+  "html_url": "https://rawcdn.githack.com/hero1356-kor/stock-broadcast-catchup/9e23efdf5c4217859ed503885f09d18808fc6010/market-briefs/morning-0600/2026-09-03-0530.html",
   "archive_txt_path": "market-briefs/morning-0600/2026-09-03-0530.txt",
   "archive_html_path": "market-briefs/morning-0600/2026-09-03-0530.html",
-  "commit_sha": null,
-  "message": "generating"
+  "commit_sha": "9e23efdf5c4217859ed503885f09d18808fc6010",
+  "message": "ok"
 }
