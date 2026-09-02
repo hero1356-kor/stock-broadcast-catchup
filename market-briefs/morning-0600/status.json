@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "date_kst": null,
+  "ready": false,
+  "generated_at_kst": null,
+  "data_cutoff_kst": null,
+  "market_state": "not_generated",
+  "txt_url": null,
+  "html_url": null,
+  "archive_txt_path": null,
+  "archive_html_path": null,
+  "commit_sha": null,
+  "message": "initialized"
+}
