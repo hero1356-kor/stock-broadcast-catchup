@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "date_kst": null,
+  "date_kst": "2026-09-03",
   "ready": false,
-  "generated_at_kst": null,
+  "generated_at_kst": "2026-09-03T05:30:03+09:00",
   "data_cutoff_kst": null,
-  "market_state": "not_generated",
+  "market_state": "generating",
   "txt_url": null,
   "html_url": null,
-  "archive_txt_path": null,
-  "archive_html_path": null,
+  "archive_txt_path": "market-briefs/morning-0600/2026-09-03-0530.txt",
+  "archive_html_path": "market-briefs/morning-0600/2026-09-03-0530.html",
   "commit_sha": null,
-  "message": "initialized"
+  "message": "generating"
 }
