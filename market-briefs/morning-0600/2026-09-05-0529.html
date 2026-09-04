@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>증시 브리핑 · 2026-09-05</title>
+  <style>
+    :root{--paper:#F4F3EF;--panel:#FCFBF8;--soft:#ECEDEA;--ink:#273038;--muted:#62696d;--line:#c9ccca;--accent:#8C1D2C}
+    *{box-sizing:border-box}html{background:var(--paper);color:var(--ink);font-family:"LG Smart","LG스마트체","LG EI Text",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;font-variant-numeric:tabular-nums}
+    body{margin:0;background:var(--paper);line-height:1.55}.page{max-width:1120px;margin:auto;padding:calc(30px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left))}
+    a{color:var(--ink);text-decoration-color:#7b8184;text-underline-offset:3px}.kicker{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;border-top:4px solid var(--ink);padding-top:12px}.hero{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:end;border-bottom:1px solid var(--ink);padding:18px 0 24px}.hero h1{font-size:clamp(42px,7vw,78px);line-height:.95;letter-spacing:-.06em;margin:0}.meta{text-align:right;font-size:13px;color:var(--muted)}.meta strong{display:block;color:var(--ink);font-size:15px}
+    .judgment{margin:24px 0 34px;border:2px solid var(--accent);background:var(--panel);padding:20px 22px}.judgment .label,.risk .label,.final .label{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.13em}.judgment h2{margin:5px 0 8px;font-size:clamp(22px,3.5vw,35px);line-height:1.18;letter-spacing:-.035em}.judgment p{margin:0;color:#41494e}
+    section{padding:28px 0;border-top:1px solid var(--line)}.section-head{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:baseline;margin-bottom:17px}.no{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--muted)}h2{font-size:26px;line-height:1.15;letter-spacing:-.035em;margin:0}h3{font-size:16px;margin:0 0 8px;letter-spacing:-.02em}p{margin:0 0 10px}.sub{font-size:13px;color:var(--muted)}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}.metric{background:var(--panel);padding:15px 14px;min-height:106px}.metric .name{font-size:12px;color:var(--muted);font-weight:800}.metric .value{font-size:25px;font-weight:900;letter-spacing:-.04em;margin:5px 0 2px}.metric .change{font-size:13px;font-weight:800}.metric .time{font-size:11px;color:var(--muted);margin-top:6px}
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.cards.three{grid-template-columns:repeat(3,1fr)}.card{border:1px solid var(--line);background:var(--panel);padding:17px}.card p:last-child{margin-bottom:0}.tag{display:inline-block;background:var(--soft);border:1px solid var(--line);padding:2px 7px;font-size:11px;font-weight:800;margin-bottom:8px}
+    .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line)}table{border-collapse:collapse;width:100%;min-width:720px;background:var(--panel);font-size:13px}th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--soft);font-size:11px;letter-spacing:.05em}tr:last-child td{border-bottom:0}.num{text-align:right;white-space:nowrap;font-weight:800}
+    .bar-row{display:grid;grid-template-columns:135px 1fr 70px;gap:10px;align-items:center;margin:9px 0;font-size:13px}.bar-track{height:8px;background:var(--soft);border:1px solid var(--line)}.bar-fill{height:100%;background:var(--ink)}.bar-value{text-align:right;font-weight:800}.risk{border:2px solid var(--accent);padding:16px 18px;background:var(--panel);margin-top:12px}.watch{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.watch-item{border-top:3px solid var(--ink);background:var(--panel);padding:14px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.watch-item strong{font-size:21px;display:block}.final{background:var(--accent);color:#fff;padding:23px;margin:28px 0}.final .label{color:#fff;opacity:.82}.final h2{font-size:clamp(24px,4vw,38px);margin:5px 0 8px}.final p{margin:0;color:#fff}.checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}.check{background:var(--panel);padding:14px 16px}.check strong{display:block;margin-bottom:3px}.sources{font-size:12.5px;color:var(--muted)}.sources ol{padding-left:22px;margin:0}.sources li{margin:7px 0}.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--ink);font-size:11px;color:var(--muted)}
+    @media(max-width:720px){.page{padding-top:calc(22px + env(safe-area-inset-top));padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right))}.hero{grid-template-columns:1fr}.meta{text-align:left}.metrics{grid-template-columns:repeat(2,1fr)}.cards,.cards.three,.watch,.checklist{grid-template-columns:1fr}.section-head{grid-template-columns:40px 1fr}.metric{min-height:100px;padding:13px 11px}.metric .value{font-size:22px}.sub,.sources,table{font-size:12.5px}.bar-row{grid-template-columns:105px 1fr 58px}}
+    @media print{body,.page{background:#fff}.page{max-width:none;padding:12mm}.card,.metric,.judgment,.risk,.watch-item{break-inside:avoid}a{text-decoration:none}.final{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style>
+</head>
+<body><main class="page">
+  <div class="kicker">MORNING MARKET &amp; TECHNOLOGY REPORT</div>
+  <header class="hero">
+    <h1>증시 브리핑</h1>
+    <div class="meta"><strong>2026년 9월 5일 토요일</strong>AS OF 05:29 KST · 9월 4일 16:29 ET<br>미국 정규장 마감 · 한국 주말 휴장</div>
+  </header>
+
+  <article class="judgment">
+    <div class="label">종합 판단 · SELECTIVE RISK-ON</div>
+    <h2>고용 쇼크에도 지수는 소폭 조정, 반도체는 강하게 분리됐다.</h2>
+    <p>미국 8월 신규고용 16만2천 명이 예상 5만6천 명을 크게 웃돌아 9월 금리인상 확률과 국채금리가 상승했다. 그럼에도 SOX는 3.37% 올라, 시장은 ‘지수 전체’보다 AI·메모리 실적 모멘텀을 선택했다. 월요일 한국장은 이 반도체 강세와 달러·금리 반등을 함께 가격에 반영해야 한다.</p>
+  </article>
+
+  <section>
+    <div class="section-head"><div class="no">01</div><h2>Overnight Snapshot</h2></div>
+    <div class="metrics">
+      <div class="metric"><div class="name">S&amp;P 500</div><div class="value">7,716.95</div><div class="change">▼ 0.40%</div><div class="time">9/4 미국 정규장 종가</div></div>
+      <div class="metric"><div class="name">NASDAQ</div><div class="value">26,506.99</div><div class="change">▼ 0.30%</div><div class="time">9/4 미국 정규장 종가</div></div>
+      <div class="metric"><div class="name">DOW</div><div class="value">53,413.60</div><div class="change">▼ 0.50%</div><div class="time">9/4 미국 정규장 종가</div></div>
+      <div class="metric"><div class="name">SOX</div><div class="value">11,735.26</div><div class="change">▲ 3.37%</div><div class="time">9/4 미국 정규장 종가 · Nasdaq</div></div>
+      <div class="metric"><div class="name">미 국채 2Y</div><div class="value">4.40%</div><div class="change">약 +6bp</div><div class="time">9/4 08:30 ET 직후</div></div>
+      <div class="metric"><div class="name">미 국채 10Y</div><div class="value">4.77%</div><div class="change">장중 4.80%</div><div class="time">9/4 16:00 ET 부근</div></div>
+      <div class="metric"><div class="name">DXY</div><div class="value">99.16</div><div class="change">▲ 0.25%</div><div class="time">9/4 16:06 ET</div></div>
+      <div class="metric"><div class="name">WTI / BRENT</div><div class="value">$90.76 / $95.29</div><div class="change">주간 +8.3% / +6.1%</div><div class="time">9/4 선물 정산</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div class="no">02</div><h2>Why It Moved</h2></div>
+    <div class="cards three">
+      <article class="card"><div class="tag">MACRO</div><h3>고용이 금리 경로를 다시 올렸다</h3><p>미 노동부는 8월 비농업 고용이 16만2천 명 증가했고 실업률은 4.1%로 유지됐다고 발표했다. Reuters 예상 5만6천 명을 크게 웃돌았다.</p></article>
+      <article class="card"><div class="tag">RATES</div><h3>9월 인상 기대 65%</h3><p>단기금리 선물의 9월 인상 가능성은 고용 발표 전 약 55%에서 약 65%로 높아졌다. 2년물이 더 민감하게 뛰며 성장주 할인율 부담을 키웠다.</p></article>
+      <article class="card"><div class="tag">ROTATION</div><h3>지수 약세, 칩은 강세</h3><p>S&amp;P 500은 0.40% 내렸지만 SOX는 3.37% 상승했다. ‘금리 부담’보다 AI·메모리 이익 모멘텀이 강한 종목으로 자금이 좁아진 흐름이다.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div class="no">03</div><h2>AI · Semiconductor Check</h2></div>
+    <div class="table-scroll"><table>
+      <thead><tr><th>기업 / 영역</th><th class="num">9/4 변화</th><th>확인된 변화와 해석</th></tr></thead>
+      <tbody>
+        <tr><td>NVIDIA</td><td class="num">▲ 0.77%</td><td>정규장 230.36달러. 광범위 지수 하락 속 방어에 성공했지만, 신규 대형 제품 발표는 확인되지 않았다.</td></tr>
+        <tr><td>AMD</td><td class="num">▲ 4.69%</td><td>정규장 477.57달러. SOX 강세를 주도한 축 중 하나로, AI 가속기 경쟁 구도의 선택적 매수 신호다.</td></tr>
+        <tr><td>Micron</td><td class="num">▲ 6.03%</td><td>정규장 1,016.59달러. 메모리 업황 기대가 재부각됐다. 새 실적 발표는 없으며 다음 실적 관련 일정은 회사 IR을 우선 확인한다.</td></tr>
+        <tr><td>Samsung Electronics</td><td class="num">▲ 2.20%</td><td>9/4 한국 종가 255,500원. 외국인·기관 복귀와 반도체 저가매수가 동반됐다.</td></tr>
+        <tr><td>SK hynix</td><td class="num">▲ 3.20%</td><td>9/4 한국 종가 1,647,000원. 메모리 강세와 국내 수급 회복이 겹쳤다.</td></tr>
+        <tr><td>정책 / CAPEX</td><td class="num">진행 중</td><td>9/4 한국 대통령실은 한·미 협의에 미국 내 반도체 투자가 포함돼 있다고 확인했다. 미국의 표적형 관세 정책은 국내 업체의 현지 투자·수익성 변수가 된다.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="risk"><div class="label">IMPORTANT RISK</div><strong>SOX 급등을 업종 전체의 무조건적 강세로 읽지 말 것.</strong><p>미 2년물과 달러가 동시에 오른 날이다. 반도체 안에서도 실적 가시성과 메모리 가격 결정력이 약한 종목은 금리 충격에 더 민감할 수 있다.</p></div>
+    <p class="sub" style="margin-top:12px"><strong>RTL · ASIC/FPGA · HLS · EDA:</strong> 9월 4일까지 주요 공식 채널에서 실무 흐름을 바꿀 새 대형 업데이트 없음.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><div class="no">04</div><h2>Cross Asset</h2></div>
+    <div class="cards">
+      <article class="card"><h3>금리 · 달러</h3><div class="bar-row"><span>2년물</span><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><span class="bar-value">4.40%</span></div><div class="bar-row"><span>10년물</span><div class="bar-track"><div class="bar-fill" style="width:86%"></div></div><span class="bar-value">4.77%</span></div><div class="bar-row"><span>DXY</span><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><span class="bar-value">99.16</span></div><p class="sub">강한 고용으로 ‘인하 지연’이 아니라 ‘추가 인상 가능성’이 다시 가격에 반영됐다.</p></article>
+      <article class="card"><h3>유가 · 원화</h3><div class="bar-row"><span>WTI</span><div class="bar-track"><div class="bar-fill" style="width:76%"></div></div><span class="bar-value">$90.76</span></div><div class="bar-row"><span>Brent</span><div class="bar-track"><div class="bar-fill" style="width:83%"></div></div><span class="bar-value">$95.29</span></div><div class="bar-row"><span>USD/KRW</span><div class="bar-track"><div class="bar-fill" style="width:48%"></div></div><span class="bar-value">1,350.4</span></div><p class="sub">원·달러는 9/4 15:30 KST 서울 종가. 이후 미국 고용 발표와 달러 반등은 반영되지 않은 값이다.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div class="no">05</div><h2>Korea Open Preview</h2></div>
+    <div class="metrics">
+      <div class="metric"><div class="name">KOSPI</div><div class="value">6,687.21</div><div class="change">▲ 1.64%</div><div class="time">9/4 15:30 KST 종가</div></div>
+      <div class="metric"><div class="name">KOSDAQ</div><div class="value">813.50</div><div class="change">▲ 2.95%</div><div class="time">9/4 15:30 KST 종가</div></div>
+      <div class="metric"><div class="name">KOSPI 외국인</div><div class="value">+5,034억</div><div class="change">6거래일 만의 순매수</div><div class="time">9/4 현물</div></div>
+      <div class="metric"><div class="name">KOSPI 기관</div><div class="value">+1조6,690억</div><div class="change">순매수 전환</div><div class="time">9/4 현물</div></div>
+    </div>
+    <p class="sub" style="margin-top:12px">오늘은 토요일로 한국 증시가 휴장이다. 다음 정규장은 9월 7일 월요일이며, 미국 시장도 노동절로 휴장한다. 월요일 한국장은 금요일 SOX 강세를 선반영할 수 있지만 고용 이후 높아진 금리·달러 부담을 함께 확인해야 한다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><div class="no">06</div><h2>Scenario &amp; Action</h2></div>
+    <div class="cards three">
+      <article class="card"><div class="tag">BASE</div><h3>반도체 우위, 지수는 제한</h3><p>SOX 강세와 국내 외국인 복귀가 월요일 반도체를 지지하되, 10년물 4.8% 부근이 코스피 상단을 제한하는 시나리오.</p></article>
+      <article class="card"><div class="tag">UPSIDE</div><h3>달러·금리 진정</h3><p>주말 이후 미 10년물이 4.77% 아래로 안정되고 원화 약세가 제한되면 외국인 반도체 순매수 연장 가능성이 커진다.</p></article>
+      <article class="card"><div class="tag">DOWNSIDE</div><h3>유가·인플레 재점화</h3><p>Brent가 100달러를 향하거나 2년물이 재차 급등하면 CPI 전 위험 축소가 우선될 수 있다.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><div class="no">07</div><h2>Watch</h2></div>
+    <div class="watch">
+      <div class="watch-item"><span class="sub">RATES</span><strong>10Y 4.80%</strong><p>재돌파 여부가 성장주 밸류에이션의 첫 관문.</p></div>
+      <div class="watch-item"><span class="sub">CHIPS</span><strong>SOX 11,735</strong><p>월요일 국내 반도체로 강세가 전이되는지 확인.</p></div>
+      <div class="watch-item"><span class="sub">FLOW</span><strong>외국인 +5,034억</strong><p>일회성 반등인지 연속 순매수로 이어지는지 확인.</p></div>
+    </div>
+  </section>
+
+  <article class="final"><div class="label">핵심 결론</div><h2>반도체는 강하지만, 추격보다 ‘금리와 외국인 수급 확인’이 먼저다.</h2><p>월요일 한국장은 SOX 3.37% 상승이 우호적이다. 다만 강한 고용이 9월 인상 가능성을 높인 만큼, 삼성전자·SK하이닉스의 시초가보다 외국인 현물·선물 동반 순매수 지속 여부를 기준으로 대응한다.</p></article>
+
+  <section>
+    <div class="section-head"><div class="no">08</div><h2>Today Checklist</h2></div>
+    <div class="checklist">
+      <div class="check"><strong>9/7 월요일 · 미국 노동절</strong><span class="sub">NYSE·Nasdaq·미 채권시장 휴장. 한국장은 개장.</span></div>
+      <div class="check"><strong>9/10 21:30 KST · 미국 PPI</strong><span class="sub">BLS 8월 생산자물가 · 9/10 08:30 ET.</span></div>
+      <div class="check"><strong>9/11 21:30 KST · 미국 CPI</strong><span class="sub">BLS 8월 소비자물가 · 9/11 08:30 ET.</span></div>
+      <div class="check"><strong>9/16–17 KST · FOMC</strong><span class="sub">공식 회의 9/15–16 ET. 결정은 통상 9/17 03:00 KST.</span></div>
+      <div class="check"><strong>9/30 18:00 ET · Micron IR</strong><span class="sub">회사 공식 Post‑Earnings Analyst Call · 10/1 07:00 KST.</span></div>
+      <div class="check"><strong>새벽 주요 실적</strong><span class="sub">9/4 정규장 이후 시장을 바꿀 새 반도체 실적 발표는 확인되지 않음.</span></div>
+    </div>
+  </section>
+
+  <section class="sources">
+    <div class="section-head"><div class="no">S</div><h2>Sources</h2></div>
+    <ol>
+      <li><a href="https://www.bls.gov/news.release/empsit.nr0.htm">U.S. Bureau of Labor Statistics — Employment Situation, August 2026</a> (2026-09-04)</li>
+      <li><a href="https://www.reuters.com/world/china/global-markets-wrapup-1-2026-09-04/">Reuters — Yields rise, stocks mostly ease after solid U.S. jobs report</a> (2026-09-04)</li>
+      <li><a href="https://www.investing.com/news/stock-market-news/us-stock-index-futures-steady-with-nonfarm-payrolls-on-deck-4888717">Investing.com — U.S. stocks close after jobs report</a> (2026-09-04)</li>
+      <li><a href="https://indexes.nasdaqomx.com/Index/Overview/SOX">Nasdaq — PHLX Semiconductor Index</a> (data as of 2026-09-04)</li>
+      <li><a href="https://www.yna.co.kr/amp/view/AKR20260904131300008">연합뉴스 — 코스피·코스닥 9월 4일 마감 및 수급</a> (2026-09-04)</li>
+      <li><a href="https://www.reuters.com/world/asia-pacific/south-korea-says-chip-investments-under-discussion-with-us-amid-tariff-concerns-2026-09-04/">Reuters — 한·미 반도체 투자 협의</a> (2026-09-04)</li>
+      <li><a href="https://www.reuters.com/business/energy/oil-set-steepest-weekly-gain-since-mid-july-over-intensifying-us-iran-tensions-2026-09-04/">Reuters — WTI·Brent 9월 4일 정산</a> (2026-09-04)</li>
+      <li><a href="https://www.bls.gov/schedule/2026/09_sched.htm">BLS — September 2026 release calendar</a></li>
+      <li><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm">Federal Reserve — 2026 FOMC calendar</a></li>
+      <li><a href="https://investors.micron.com/events-and-presentations/default.aspx">Micron Investor Relations — Events &amp; presentations</a></li>
+      <li><a href="https://www.synopsys.com/">Synopsys</a> · <a href="https://www.cadence.com/en_US/home/company/newsroom.html">Cadence Newsroom</a> · <a href="https://eda.sw.siemens.com/en-US/">Siemens EDA</a> (업데이트 점검)</li>
+    </ol>
+  </section>
+  <div class="foot">정보 제공 목적의 브리핑이며 투자 자문이 아닙니다. 장중 지표는 공급자별 지연·정정 가능성이 있습니다.</div>
+</main></body></html>
