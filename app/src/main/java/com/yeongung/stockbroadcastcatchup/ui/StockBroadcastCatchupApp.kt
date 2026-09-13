@@ -163,13 +163,6 @@ private fun LiveScreen(
         )
 
         Spacer(Modifier.height(10.dp))
-        MicrophoneQualityCheckCard(
-            hasMicrophonePermission = state.hasMicrophonePermission,
-            isListening = state.isSttListening,
-            recentTranscriptCount = state.recentTranscript.size,
-        )
-
-        Spacer(Modifier.height(10.dp))
         ActionButton(
             text = "방금 1분 요약",
             containerColor = CatchupColors.Primary,
@@ -254,21 +247,22 @@ private fun RecentSummaryScreen(
             BulletList(items = state.recentOneMinuteSummary)
         }
 
-        Spacer(Modifier.height(14.dp))
-        SimpleCard(containerColor = CatchupColors.PrimarySoft) {
-            Text(
-                text = "일부 구간은 소음으로 누락될 수 있어요",
-                color = CatchupColors.Ink,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-
         Spacer(Modifier.height(18.dp))
         SectionTitle("방금 지나간 자막")
         Spacer(Modifier.height(8.dp))
-        state.recentTranscript.forEach { line ->
-            TranscriptLineRow(line = line)
-            Spacer(Modifier.height(8.dp))
+        if (state.recentTranscript.isEmpty()) {
+            SimpleCard {
+                Text(
+                    text = "아직 텍스트화된 문장이 없습니다.",
+                    color = CatchupColors.Ink,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        } else {
+            state.recentTranscript.forEach { line ->
+                TranscriptLineRow(line = line)
+                Spacer(Modifier.height(8.dp))
+            }
         }
 
         Spacer(Modifier.height(20.dp))
@@ -345,8 +339,8 @@ private fun CatchupAlertsScreen(
             )
         }
 
+        Spacer(Modifier.height(12.dp))
         if (alerts.isEmpty()) {
-            Spacer(Modifier.height(12.dp))
             SimpleCard {
                 Text(
                     text = "방송에서 중요한 키워드가 나오면 여기에 모아둘게요.",
@@ -355,7 +349,6 @@ private fun CatchupAlertsScreen(
                 )
             }
         } else {
-            Spacer(Modifier.height(12.dp))
             alerts.forEach { alert ->
                 CatchupAlertCard(alert = alert)
                 Spacer(Modifier.height(10.dp))
@@ -462,21 +455,6 @@ private fun BroadcastDetailScreen(
         SimpleCard {
             broadcast.timeline.forEach { item ->
                 TimelineRow(time = item.time, title = item.title)
-            }
-        }
-
-        Spacer(Modifier.height(18.dp))
-        SectionTitle("저신뢰 구간")
-        Spacer(Modifier.height(8.dp))
-        SimpleCard {
-            if (broadcast.lowConfidenceRanges.isEmpty()) {
-                Text(
-                    text = "특별히 낮게 인식된 구간이 없습니다.",
-                    color = CatchupColors.Ink,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            } else {
-                BulletList(items = broadcast.lowConfidenceRanges)
             }
         }
     }
@@ -592,7 +570,7 @@ private fun SttControlCard(
     onStop: () -> Unit,
 ) {
     SimpleCard(containerColor = CatchupColors.PrimarySoft) {
-        SectionTitle("STT")
+        SectionTitle("TV 소리 텍스트화")
         Spacer(Modifier.height(8.dp))
         Text(
             text = statusLabel,
@@ -602,46 +580,13 @@ private fun SttControlCard(
         Spacer(Modifier.height(12.dp))
         ActionButton(
             text = when {
-                isListening -> "STT 중지"
-                hasMicrophonePermission -> "STT 시작"
+                isListening -> "중지"
+                hasMicrophonePermission -> "녹음 시작"
                 else -> "마이크 권한 허용"
             },
             containerColor = if (isListening) CatchupColors.Secondary else CatchupColors.Primary,
             contentColor = if (isListening) Color.White else Color(0xFF041313),
             onClick = if (isListening) onStop else onStart,
-        )
-    }
-}
-
-@Composable
-private fun MicrophoneQualityCheckCard(
-    hasMicrophonePermission: Boolean,
-    isListening: Boolean,
-    recentTranscriptCount: Int,
-) {
-    val statusText = when {
-        !hasMicrophonePermission -> "마이크 권한을 먼저 허용해야 TV 소리 테스트를 할 수 있어요."
-        isListening && recentTranscriptCount == 0 -> "듣는 중인데 자막이 안 뜨면 TV 소리가 멀거나 작게 들어오는 상태일 수 있어요."
-        isListening -> "자막이 들어오고 있으면 마이크 입력은 정상입니다. TV 소리도 같은 위치에서 테스트해보세요."
-        else -> "TV 소리 테스트 전에 STT 시작을 누르고 아래 조건을 확인해보세요."
-    }
-
-    SimpleCard(containerColor = CatchupColors.SurfaceRaised) {
-        SectionTitle("마이크 품질 체크")
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = statusText,
-            color = CatchupColors.Ink,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Spacer(Modifier.height(12.dp))
-        BulletList(
-            items = listOf(
-                "폰을 TV 스피커 30cm~1m 근처에 둬보세요.",
-                "TV 볼륨은 중간 이상으로, 너무 크면 왜곡될 수 있어요.",
-                "배경음악/효과음이 적고 말소리가 또렷한 장면으로 먼저 테스트하세요.",
-                "계속 안 잡히면 다음 단계는 내부 오디오 캡처 실험입니다.",
-            ),
         )
     }
 }
@@ -713,13 +658,21 @@ private fun TranscriptPreview(lines: List<TranscriptLine>) {
     SimpleCard {
         SectionTitle("실시간 자막")
         Spacer(Modifier.height(10.dp))
-        lines.forEachIndexed { index, line ->
-            TranscriptLineRow(line = line)
-            if (index != lines.lastIndex) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    color = CatchupColors.SurfaceMuted,
-                )
+        if (lines.isEmpty()) {
+            Text(
+                text = "TV 소리가 텍스트화되면 여기에 표시됩니다.",
+                color = CatchupColors.InkMuted,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        } else {
+            lines.forEachIndexed { index, line ->
+                TranscriptLineRow(line = line)
+                if (index != lines.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        color = CatchupColors.SurfaceMuted,
+                    )
+                }
             }
         }
     }
@@ -832,6 +785,15 @@ private fun ActionButton(
 
 @Composable
 private fun BulletList(items: List<String>) {
+    if (items.isEmpty()) {
+        Text(
+            text = "아직 요약할 자막이 없습니다.",
+            color = CatchupColors.Ink,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        return
+    }
+
     items.forEachIndexed { index, item ->
         Row(verticalAlignment = Alignment.Top) {
             Text(
