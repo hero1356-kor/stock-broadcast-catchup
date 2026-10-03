@@ -1,0 +1,2 @@
+automation write probe
+2026-10-03 KST
