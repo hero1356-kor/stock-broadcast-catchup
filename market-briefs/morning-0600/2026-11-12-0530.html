@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>2026년 11월 12일 시장·기술 브리핑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{--paper:#F4F3EF;--panel:#FCFBF8;--soft:#ECEDEA;--ink:#273038;--muted:#747A7E;--line:#C8CAC7;--burg:#8C1D2C}
+    *{box-sizing:border-box}
+    html{background:var(--paper);color:var(--ink);scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);font-family:"Nanum Myeongjo","Apple SD Gothic Neo","Noto Serif KR",serif;line-height:1.72;letter-spacing:-.012em}
+    a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+    main{width:min(980px,calc(100% - 48px));margin:0 auto;padding:70px 0 90px}
+    .masthead{border-top:6px solid var(--ink);border-bottom:1px solid var(--ink);padding:18px 0 16px;display:flex;justify-content:space-between;gap:24px;align-items:flex-end}
+    .eyebrow,.kicker,.label{font-family:Arial,"Apple SD Gothic Neo",sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:700}
+    .meta{font-family:Arial,"Apple SD Gothic Neo",sans-serif;color:var(--muted);font-size:12px;line-height:1.55;text-align:right}
+    h1{font-size:clamp(46px,7.5vw,72px);line-height:1.02;letter-spacing:-.055em;margin:42px 0 12px;font-weight:800}
+    .deck{font-size:19px;color:var(--muted);margin:0 0 52px;max-width:720px}
+    .status{font-family:Arial,"Apple SD Gothic Neo",sans-serif;border-top:1px solid var(--burg);border-bottom:1px solid var(--burg);padding:11px 0;margin:0 0 45px;color:var(--burg);font-size:13px;font-weight:700;letter-spacing:.02em}
+    section{padding:46px 0 42px;border-top:1px solid var(--line)}
+    .section-head{display:flex;align-items:baseline;gap:13px;margin-bottom:25px}
+    .section-no{font-family:Arial,sans-serif;color:var(--burg);font-size:12px;font-weight:700;letter-spacing:.12em}
+    h2{font-size:29px;line-height:1.25;margin:0;letter-spacing:-.035em}
+    h3{font-size:18px;line-height:1.45;margin:0 0 10px}
+    p{margin:0 0 16px}
+    .judgment{padding:20px 0 52px;border-top:0}
+    .judgment .kicker{color:var(--burg);margin-bottom:16px}
+    .judgment p{font-size:clamp(28px,4.3vw,43px);line-height:1.48;letter-spacing:-.04em;margin:0;max-width:920px}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:42px;padding-bottom:46px}
+    .compare article{border-top:2px solid var(--ink);padding-top:14px}
+    .compare h2{font-size:19px;margin-bottom:15px}
+    .compare ul{list-style:none;margin:0;padding:0}
+    .compare li{padding:12px 0;border-top:1px solid var(--line);font-size:15px}
+    .compare li:first-child{border-top:0}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+    .metric{padding:18px 16px 17px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:112px}
+    .metric:nth-child(4n){border-right:0}
+    .metric:nth-last-child(-n+4){border-bottom:0}
+    .metric .name{font-family:Arial,"Apple SD Gothic Neo",sans-serif;font-size:11px;color:var(--muted);letter-spacing:.04em;margin-bottom:8px}
+    .metric .value{font-family:Georgia,"Nanum Myeongjo",serif;font-weight:700;font-size:22px;line-height:1.1}
+    .metric .change{font-family:Arial,"Apple SD Gothic Neo",sans-serif;font-size:12px;margin-top:7px}
+    .metric .stamp{font-family:Arial,"Apple SD Gothic Neo",sans-serif;color:var(--muted);font-size:10px;margin-top:8px;line-height:1.4}
+    .note{font-family:Arial,"Apple SD Gothic Neo",sans-serif;color:var(--muted);font-size:12px;line-height:1.65;margin-top:14px}
+    .lead{font-size:22px;line-height:1.72;margin-bottom:28px;max-width:850px}
+    .story{display:grid;grid-template-columns:140px 1fr;gap:26px;padding:20px 0;border-top:1px solid var(--line)}
+    .story:first-of-type{border-top:1px solid var(--ink)}
+    .story .tag{font-family:Arial,"Apple SD Gothic Neo",sans-serif;color:var(--burg);font-weight:700;font-size:12px;letter-spacing:.06em}
+    .story p{margin:0}
+    .columns{columns:2;column-gap:48px;column-rule:1px solid var(--line)}
+    .column-item{break-inside:avoid;padding:0 0 23px;margin-bottom:23px;border-bottom:1px solid var(--line)}
+    .column-item:last-child{margin-bottom:0}
+    .facts{margin-top:23px;border-top:1px solid var(--ink)}
+    .fact{display:grid;grid-template-columns:175px 1fr;gap:22px;padding:14px 0;border-bottom:1px solid var(--line)}
+    .fact dt{font-family:Arial,"Apple SD Gothic Neo",sans-serif;color:var(--muted);font-size:12px}
+    .fact dd{margin:0;font-size:15px}
+    .scenario,.watch,.check{border-top:1px solid var(--ink)}
+    .row{display:grid;grid-template-columns:150px 1fr 210px;gap:24px;padding:18px 0;border-bottom:1px solid var(--line);align-items:start}
+    .row .row-title{font-weight:800;font-size:15px}
+    .row .trigger{font-size:14px}
+    .row .action{font-family:Arial,"Apple SD Gothic Neo",sans-serif;font-size:12px;color:var(--burg);font-weight:700}
+    .watch .row,.check .row{grid-template-columns:170px 1fr}
+    .watch .row .action,.check .row .action{display:none}
+    .conclusion{border-top:3px solid var(--ink);padding:35px 0 48px;margin-top:20px}
+    .conclusion .kicker{color:var(--burg);margin-bottom:16px}
+    .conclusion p{color:var(--burg);font-size:clamp(31px,5vw,51px);line-height:1.42;letter-spacing:-.045em;font-weight:800;margin:0}
+    .sources{font-family:Arial,"Apple SD Gothic Neo",sans-serif;font-size:11px;color:var(--muted);line-height:1.65}
+    .sources ol{padding-left:20px;margin:0}
+    .sources li{padding:5px 0}
+    .sources a{overflow-wrap:anywhere}
+    footer{border-top:1px solid var(--ink);padding-top:18px;font-family:Arial,"Apple SD Gothic Neo",sans-serif;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:20px}
+    @media(max-width:720px){
+      main{width:min(100% - 30px,980px);padding-top:30px}
+      .masthead{align-items:flex-start;flex-direction:column}.meta{text-align:left}
+      h1{margin-top:34px}.deck{margin-bottom:35px}
+      .compare{grid-template-columns:1fr;gap:28px}
+      .metrics{grid-template-columns:repeat(2,1fr)}
+      .metric:nth-child(4n){border-right:1px solid var(--line)}
+      .metric:nth-child(2n){border-right:0}
+      .metric:nth-last-child(-n+4){border-bottom:1px solid var(--line)}
+      .metric:nth-last-child(-n+2){border-bottom:0}
+      .story{grid-template-columns:1fr;gap:7px}.columns{columns:1;column-rule:0}
+      .fact{grid-template-columns:1fr;gap:5px}
+      .row,.watch .row,.check .row{grid-template-columns:1fr;gap:7px}
+      footer{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="masthead">
+      <div class="eyebrow">Alpha Council · Morning Research Note</div>
+      <div class="meta">2026년 11월 12일 목요일<br>기준시각 05:30 KST · 데이터 컷오프 05:30 KST</div>
+    </div>
+    <h1>시장·기술 브리핑</h1>
+    <p class="deck">밤사이 가격의 방향보다 그 가격을 움직인 사건을 먼저 읽는 한국 개장 전 리서치 노트.</p>
+    <div class="status">미국 시장 상태: 마감 전·장중·지연 가능 · 미국 주식 시세는 확정 종가가 아니며 Reuters 및 거래소 제공 시세가 최소 15분 지연될 수 있습니다.</div>
+  </header>
+
+  <section class="judgment">
+    <div class="kicker">종합 판단 · 선택적 위험선호</div>
+    <p>CoreWeave가 계약·선수금·수주잔고로 AI 인프라 수요의 지속성을 보여주며 반도체가 급반등했다. 다만 미국 금리는 휴장 전 4.99%까지 올랐고 한국은 이미 이틀째 강하게 반등했다. 시초가 추격보다 외국인 수급의 연속성을 확인할 구간이다.</p>
+  </section>
+
+  <div class="compare">
+    <article>
+      <h2>상승 요인</h2>
+      <ul>
+        <li>CoreWeave 3분기 매출 36.6억달러, 수주잔고 1,325억달러, 향후 3개월 유입 예정 고객 선수금 약 90억달러.</li>
+        <li>SOX 장중 약 7% 급등, Micron 12.22%, AMD 7.84%, NVIDIA 3.51% 상승으로 AI 인프라·반도체에 매수 집중.</li>
+        <li>전일 KOSPI 외국인 6,552.6억원 순매수, Samsung Electronics 20만6천원·SK hynix 한국 본주 127만7천원 마감.</li>
+      </ul>
+    </article>
+    <article>
+      <h2>위험 요인</h2>
+      <ul>
+        <li>미국 주식은 아직 장중이다. 장 막판 차익실현이 나오면 현재 반등 폭과 한국 개장 신호가 달라질 수 있다.</li>
+        <li>11월 10일 확정 미국 2년물 4.731%, 10년물 4.988%로 CPI 충격 뒤 고금리 부담이 유지됐다.</li>
+        <li>Microsoft·Amazon·Meta는 장중 하락해 AI 전체의 동반 상승이 아니다. KOSDAQ은 전일 5.62% 급등해 변동성도 커졌다.</li>
+      </ul>
+    </article>
+  </div>
+
+  <section>
+    <div class="section-head"><span class="section-no">01</span><h2>Overnight Snapshot</h2></div>
+    <div class="metrics">
+      <div class="metric"><div class="name">S&amp;P 500</div><div class="value">7,620.79</div><div class="change">+1.33%</div><div class="stamp">11/11 미국 장중 · 지연 가능</div></div>
+      <div class="metric"><div class="name">NASDAQ</div><div class="value">25,513.91</div><div class="change">+1.80%</div><div class="stamp">11/11 미국 장중 · 지연 가능</div></div>
+      <div class="metric"><div class="name">DOW</div><div class="value">52,407.20</div><div class="change">+0.34%</div><div class="stamp">11/11 미국 장중 · 지연 가능</div></div>
+      <div class="metric"><div class="name">PHLX SOX</div><div class="value">약 +7.0%</div><div class="change">1주 최고 수준</div><div class="stamp">11/11 미국 장중 · Reuters</div></div>
+      <div class="metric"><div class="name">VIX</div><div class="value">17.63</div><div class="change">4거래일째 하락</div><div class="stamp">11/11 미국 장중 · 지연 가능</div></div>
+      <div class="metric"><div class="name">미국 2년물</div><div class="value">4.731%</div><div class="change">+18.44bp</div><div class="stamp">11/10 확정 · 11/11 채권시장 휴장</div></div>
+      <div class="metric"><div class="name">미국 10년물</div><div class="value">4.988%</div><div class="change">+12.55bp</div><div class="stamp">11/10 확정 · 11/11 채권시장 휴장</div></div>
+      <div class="metric"><div class="name">DXY</div><div class="value">102.53</div><div class="change">+0.3%</div><div class="stamp">11/11 장중 · 4주 최고</div></div>
+      <div class="metric"><div class="name">Brent</div><div class="value">$92.76</div><div class="change">+1.39%</div><div class="stamp">11/11 정산가</div></div>
+      <div class="metric"><div class="name">USD/KRW</div><div class="value">1,333.6원</div><div class="change">-3.9원</div><div class="stamp">11/11 15:30 KST 확정</div></div>
+      <div class="metric"><div class="name">KOSPI</div><div class="value">5,375.36</div><div class="change">+2.60%</div><div class="stamp">11/11 15:30 KST 확정</div></div>
+      <div class="metric"><div class="name">KOSDAQ</div><div class="value">705.10</div><div class="change">+5.62%</div><div class="stamp">11/11 15:30 KST 확정</div></div>
+    </div>
+    <p class="note">주식·VIX·DXY는 05:30 KST 데이터 컷오프의 장중·지연 가능 스냅샷이다. 미국 채권시장은 Veterans Day로 11월 11일 휴장했으므로 11월 10일 확정 종가를 사용했다. KOSPI200 야간선물은 06:00 KST 마감 전이어서 확정값을 기재하지 않았다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">02</span><h2>Why It Moved</h2></div>
+    <p class="lead">가격을 움직인 핵심은 새 모델 발표가 아니라 AI 인프라의 실제 계약과 자금흐름이었다. CoreWeave 실적이 자금조달 우려를 완화하면서 최근 매도 압력이 컸던 GPU·메모리·데이터센터 주식에 숏커버와 위험선호가 동시에 들어왔다.</p>
+    <div class="story">
+      <div class="tag">CATALYST</div>
+      <div><h3>CoreWeave가 ‘수요는 있으나 돈이 부족하다’는 우려를 완화</h3><p>3분기 매출은 전년 대비 약 170% 늘어난 36.6억달러로 시장 예상 35.5억달러를 웃돌았다. 수주잔고는 6월 1,040억달러에서 1,325억달러로 늘었고, 회사는 약 90억달러의 고객 선수금·예치금이 향후 3개월에 유입될 것이라고 밝혔다. 주가는 장중 23.56% 올랐다.</p></div>
+    </div>
+    <div class="story">
+      <div class="tag">REACTION</div>
+      <div><h3>SOX 전 종목 상승, 메모리와 가속기 생태계가 반등 주도</h3><p>SOX는 장중 약 7% 올랐고 Micron 12.22%, AMD 7.84%, NVIDIA 3.51%, Broadcom 4.79%, Oracle 9.52% 상승했다. 반면 Microsoft -2.48%, Amazon -1.65%, Meta -0.99%로 대형 플랫폼은 엇갈렸다. 따라서 이날 움직임은 ‘AI 전체 재평가’보다 인프라·반도체 선택적 회복에 가깝다.</p></div>
+    </div>
+    <div class="story">
+      <div class="tag">COUNTERWEIGHT</div>
+      <div><h3>높은 금리와 유가가 밸류에이션 상단을 제한</h3><p>전날 미국 CPI가 예상보다 뜨거워 2년물과 10년물 금리가 각각 4.731%, 4.988%로 급등했다. 11일 채권시장 휴장으로 새 가격 확인이 없고, Brent도 이란·공급 우려로 배럴당 92.76달러에 정산됐다. 성장주 반등이 이어지려면 12일 금리 재개장과 장 마감 가격의 확인이 필요하다.</p></div>
+    </div>
+    <div class="story">
+      <div class="tag">SECONDARY</div>
+      <div><h3>대형 비상장 AI 기업의 자본시장 진입 가능성</h3><p>Reuters는 Anthropic이 최대 1.4조달러 가치의 상장을 검토한다고 보도했다. 당장의 칩 주문을 의미하지는 않지만, AI 기업의 자금조달 창구가 부채에서 주식시장으로 넓어지는지 확인할 사안이다.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">03</span><h2>AI·Semiconductor Check</h2></div>
+    <div class="columns">
+      <div class="column-item">
+        <h3>NVIDIA · 가속기 수요 신호는 개선, 종가는 미확정</h3>
+        <p>장중 3.51% 상승했다. CoreWeave가 내년 가용 용량 대부분이 판매됐고 수요가 가용 공급의 약 10배라고 밝힌 점은 AI 가속기 수요에 긍정적이다. 다만 NVIDIA 개별 신규 계약이 공개된 것은 아니며, 11월 18일 06:20 KST경 실적 공개가 다음 직접 검증 지점이다.</p>
+      </div>
+      <div class="column-item">
+        <h3>Micron · 메모리 탄력 가장 강해</h3>
+        <p>장중 12.22% 상승했다. 공식 최근 분기 매출은 542.3억달러, 비GAAP EPS 33.42달러였고 다음 분기 매출 가이던스는 615억달러±15억달러다. 이날 상승은 AI 인프라 수요 안도와 섹터 반등의 성격이며, 신규 Micron 주문 공시는 확인되지 않았다. 다음 공식 실적일은 회사 IR 일정에 아직 게시되지 않았다.</p>
+      </div>
+      <div class="column-item">
+        <h3>AMD · 데이터센터 베타 회복</h3>
+        <p>장중 7.84% 상승했다. CoreWeave의 실제 수요·선수금 공개가 대체 가속기와 서버 생태계에도 위험선호를 확산시켰다. 다만 공급사별 조달 물량은 공개되지 않았으므로 CoreWeave 숫자를 AMD 직접 매출로 환산하지 않는다.</p>
+      </div>
+      <div class="column-item">
+        <h3>Samsung Electronics · SK hynix 한국 본주</h3>
+        <p>11일 Samsung Electronics는 20만6천원(+3.57%), SK hynix 한국 본주는 127만7천원(+5.36%)으로 확정 마감했다. CoreWeave의 수요 신호는 HBM·DRAM 사이클에 우호적이라는 해석이 가능하지만, 메모리 공급사별 배정은 공개되지 않았다. 오늘은 갭상승 폭보다 외국인 현물·선물 동반 여부가 더 중요하다.</p>
+      </div>
+      <div class="column-item">
+        <h3>Hyperscaler scan · 상승은 균일하지 않았다</h3>
+        <p>Alphabet 2.26%, Apple 1.85%, Tesla 2.99% 상승한 반면 Microsoft·Amazon·Meta는 하락했다. 24~48시간 내 추가로 확인된 새 수십억달러급 CAPEX·GPU 구매 계약은 없었다. 플랫폼 주가의 분화는 AI 투자 논리가 ‘지출 규모’에서 ‘가동률·현금흐름’으로 이동하고 있음을 보여준다.</p>
+      </div>
+      <div class="column-item">
+        <h3>CoreWeave의 숫자, 그리고 남은 위험</h3>
+        <p>분기 CAPEX는 145억달러로 직전 분기 94억달러보다 늘었고, 2026년 매출 가이던스는 130억~133억달러로 상향됐다. 동시에 9월 말 총부채가 469억달러라는 점은 금리 상승 시 민감도를 남긴다. 수요 검증과 재무위험이 함께 커진 구조다.</p>
+      </div>
+    </div>
+    <p class="note">미국 개별 종목 수익률은 약 15:12~15:13 ET 시점의 장중·지연 가능 값이다. 사실과 수요 연결 해석을 구분했으며, 공개되지 않은 공급계약이나 물량은 추정하지 않았다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">04</span><h2>Cross Asset</h2></div>
+    <dl class="facts">
+      <div class="fact"><dt>금리</dt><dd>미국 채권시장은 11일 휴장. 10일 CPI 충격 뒤 확정 종가는 2년물 4.731%, 10년물 4.988%였다. 12일 재개장 시 5% 안착 여부가 성장주 지속성의 첫 시험이다.</dd></div>
+      <div class="fact"><dt>달러</dt><dd>DXY 102.53으로 장중 0.3% 상승하며 4주 최고 수준. 반면 서울 현물환 USD/KRW는 11일 15:30 KST 1,333.6원으로 3.9원 하락했다.</dd></div>
+      <div class="fact"><dt>변동성</dt><dd>VIX 17.63으로 4거래일 연속 하락. 주식의 위험선호는 개선됐지만 현재 수치는 미국 정규장 마감 전이다.</dd></div>
+      <div class="fact"><dt>원유</dt><dd>Brent 1월물은 배럴당 92.76달러(+1.39%)에 정산. 이란 핵 협상 불확실성과 공급 우려가 물가·금리 하방을 제한한다.</dd></div>
+      <div class="fact"><dt>미국 CPI의 잔상</dt><dd>10월 헤드라인 CPI는 전월 대비 0.4%(예상 0.3%), 근원은 0.3%(예상 0.2%). 시장은 12월 최소 25bp 인상을 사실상 반영했고 50bp 가능성도 일부 가격에 넣었다.</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">05</span><h2>Korea Open Preview</h2></div>
+    <p class="lead">미국 반도체 반등은 개장 심리에 우호적이지만, 한국 반도체는 전일 이미 강하게 올랐다. 오늘의 신호는 지수 갭보다 외국인의 두 번째 순매수와 원화의 안정이다.</p>
+    <dl class="facts">
+      <div class="fact"><dt>KOSPI 수급</dt><dd>외국인 +6,552.6억원, 기관 -4,816.7억원, 개인 -7,156.9억원. 기타법인 등을 포함해 주체별 합계가 정확히 상쇄되지 않을 수 있다.</dd></div>
+      <div class="fact"><dt>KOSDAQ 수급</dt><dd>외국인 약 -1,330억원, 기관 +3,130억원, 개인 약 -1,850억원. 지수는 5.62% 급등했고 장중 매수 사이드카가 발동됐다.</dd></div>
+      <div class="fact"><dt>반도체 기준선</dt><dd>Samsung Electronics 20만6천원, SK hynix 한국 본주 127만7천원의 전일 종가 유지 여부와 외국인 현물·선물 동반 매수 확인.</dd></div>
+      <div class="fact"><dt>야간선물</dt><dd>KOSPI200 야간선물은 05:30 KST 현재 06:00 마감 전이므로 확정 종가를 제시하지 않는다.</dd></div>
+      <div class="fact"><dt>개장 해석</dt><dd>원화가 1,340원 아래를 유지하고 외국인 순매수가 이어지면 반도체 중심 강세 연장이 가능하다. 반대로 갭상승 뒤 수급이 매도로 전환하면 전일 급등분의 되돌림 위험이 커진다.</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">06</span><h2>Scenario &amp; Action</h2></div>
+    <div class="scenario">
+      <div class="row"><div class="row-title">상방 연장</div><div class="trigger">미국 마감에서 S&amp;P 500 +1% 이상·SOX +5% 이상 유지, USD/KRW 1,340원 아래, 외국인 순매수 연속.</div><div class="action">시초가 추격 대신 반도체 눌림목에서 분할 대응</div></div>
+      <div class="row"><div class="row-title">범위 등락</div><div class="trigger">미국 상승폭 일부 축소, 10년물 4.95~5.05%, KOSPI 5,280~5,400 구간에서 수급 혼조.</div><div class="action">기존 비중 유지, 종목별 실적·수급 확인</div></div>
+      <div class="row"><div class="row-title">하방 전환</div><div class="trigger">SOX 장 막판 급반락, 원화 1,340원 상향 이탈, 외국인 현물·선물 동반 매도.</div><div class="action">고베타·레버리지 우선 축소, 현금 방어</div></div>
+    </div>
+    <p class="note">위 구간은 대응을 위한 관찰 기준이며 가격 예측이나 매매 권유가 아니다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">07</span><h2>Watch</h2></div>
+    <div class="watch">
+      <div class="row"><div class="row-title">06:00 KST</div><div class="trigger">KOSPI200 야간선물 확정 마감과 미국 장 막판 방향. 05:30 본 브리핑에는 미확정값을 쓰지 않았다.</div></div>
+      <div class="row"><div class="row-title">09:00 KST</div><div class="trigger">Samsung Electronics·SK hynix 한국 본주의 갭 유지, 외국인 현물·선물 동반 여부, USD/KRW 1,340원.</div></div>
+      <div class="row"><div class="row-title">11/13 22:30 KST</div><div class="trigger">미국 10월 PPI. ET 기준 11월 13일 금요일 08:30 발표.</div></div>
+      <div class="row"><div class="row-title">11/18 06:20 KST경</div><div class="trigger">NVIDIA 실적 발표 예정. ET 기준 11월 17일 화요일 16:20경, 컨퍼런스콜은 17:00 ET.</div></div>
+      <div class="row"><div class="row-title">11/26</div><div class="trigger">한국은행 금융통화위원회 통화정책방향 결정회의. 공식 발표 시각은 확인되지 않아 기재하지 않는다.</div></div>
+      <div class="row"><div class="row-title">12/10 04:00 KST</div><div class="trigger">FOMC 성명. ET 기준 12월 9일 수요일 14:00, 기자회견은 14:30 ET.</div></div>
+    </div>
+  </section>
+
+  <section class="conclusion">
+    <div class="kicker">핵심 결론</div>
+    <p>AI 인프라 수요의 숫자는 살아 있다. 그러나 오늘 한국 반도체의 최종 확인 신호는 미국 장중 급등률이 아니라, 종가와 외국인 수급의 연속성이다.</p>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">08</span><h2>Today Checklist</h2></div>
+    <div class="check">
+      <div class="row"><div class="row-title">미국 종가</div><div class="trigger">S&amp;P 500·NASDAQ·SOX가 현재 장중 상승폭을 유지했는가.</div></div>
+      <div class="row"><div class="row-title">반도체 확산</div><div class="trigger">Micron·AMD·NVIDIA 상승이 장 막판에도 유지되고 장비·파운드리로 확산되는가.</div></div>
+      <div class="row"><div class="row-title">외국인</div><div class="trigger">KOSPI 현물 순매수가 이틀째 이어지고 선물도 같은 방향인가.</div></div>
+      <div class="row"><div class="row-title">환율·금리</div><div class="trigger">USD/KRW 1,340원과 미국 10년물 5%가 동시에 상향 돌파하는가.</div></div>
+      <div class="row"><div class="row-title">추격 제한</div><div class="trigger">전일 급등한 KOSDAQ과 메모리 대형주의 시초가 과열 여부를 먼저 확인했는가.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-no">09</span><h2>RTL·EDA Tech Radar</h2></div>
+    <p>새 시장급 대형 업데이트는 없었다. Siemens는 11월 9~10일 SystemC·MatchLib와 Catapult HLS를 결합한 shift-left 설계·검증 흐름을 소개했다. 회사가 제시한 사례 수치는 아키텍처 조기 탐색의 실무적 진전이지만, 당일 반도체 주가의 촉매로 해석하지 않는다.</p>
+  </section>
+
+  <section class="sources">
+    <div class="section-head"><h2>Sources</h2></div>
+    <ol>
+      <li><a href="https://www.reuters.com/business/sp-500-nasdaq-futures-rise-after-coreweave-soothes-ai-spending-fears-2026-11-11/">Reuters — Stocks climb as CoreWeave results ease AI spending concerns</a>, 2026-11-11. 미국 지수·SOX·VIX·종목 반응.</li>
+      <li><a href="https://www.reuters.com/business/coreweave-beats-quarterly-revenue-estimates-ai-demand-defies-growing-doubts-2026-11-10/">Reuters — CoreWeave beats quarterly revenue estimates</a>, 2026-11-10. 매출·수주잔고·CAPEX·선수금·부채.</li>
+      <li><a href="https://www.reuters.com/world/china/global-markets-wrapup-1-2026-11-10/">Reuters — Global markets wrap-up</a>, 2026-11-10. CPI·미 국채금리·달러.</li>
+      <li><a href="https://www.reuters.com/business/energy/oil-rises-two-month-low-hormuz-shipping-attacks-offset-iran-truce-hopes-2026-11-11/">Reuters — Oil rises on supply concerns</a>, 2026-11-11. Brent 정산가.</li>
+      <li><a href="https://en.yna.co.kr/view/AEN20261111007151320">Yonhap — Seoul shares jump on chip gains</a>, 2026-11-11. KOSPI·KOSDAQ·환율·주체별 수급·한국 본주 종가.</li>
+      <li><a href="https://investors.micron.com/quarterly-results">Micron Investor Relations — Quarterly results</a>, 확인 2026-11-12 05:30 KST. 최근 실적·가이던스.</li>
+      <li><a href="https://investors.micron.com/events-and-presentations/">Micron Investor Relations — Events &amp; presentations</a>, 확인 2026-11-12 05:30 KST. 다음 공식 실적일 미게시 확인.</li>
+      <li><a href="https://www.bls.gov/schedule/2026/">U.S. Bureau of Labor Statistics — 2026 release calendar</a>, 확인 2026-11-12. PPI 일정.</li>
+      <li><a href="https://investor.nvidia.com/events-and-presentations/events-and-presentations/default.aspx">NVIDIA Investor Relations — Events</a>, 확인 2026-11-12. 실적 발표·컨퍼런스콜 일정.</li>
+      <li><a href="https://www.bok.or.kr/portal/main/contents.do?menuNo=200755">Bank of Korea — Monetary Policy Board schedule</a>, 확인 2026-11-12. 금융통화위원회 일정.</li>
+      <li><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm">Federal Reserve — FOMC calendars</a>, 확인 2026-11-12. 12월 FOMC 일정.</li>
+      <li><a href="https://blogs.sw.siemens.com/hlsdesign-verification/2026/11/09/shift-left-has-been-a-slogan-long-enough-why-systemc-matchlib-and-high-level-synthesis-are-the-right-foundation-for-soc-design-and-verification-in-an-age-of-ai/">Siemens EDA — SystemC, MatchLib and HLS shift-left flow</a>, 2026-11-09.</li>
+    </ol>
+    <p>자료 확인·대조 시각: 2026-11-12 05:30 KST. 장중 미국 시세는 최소 15분 지연될 수 있으며, 확인되지 않은 수치는 생략했다. 본 문서는 정보 제공 목적이며 투자 권유가 아니다.</p>
+  </section>
+
+  <footer><span>Alpha Council · Market &amp; Technology Brief</span><span>2026-11-12 · Editorial C / v6</span></footer>
+</main>
+</body>
+</html>
