@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>시장·기술 브리핑 · 2026-11-28 05:30 KST</title>
+<meta name="description" content="2026년 11월 28일 오전 시장·기술 브리핑. 미국 증시, AI·반도체, 한국시장, 금리·환율, 일정과 RTL·EDA 레이더.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+:root{--paper:#F4F3EF;--ink:#273038;--muted:#747A7E;--line:#C8CAC7;--burg:#8C1D2C;--serif:"Nanum Myeongjo","Noto Serif KR",serif}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-variant-numeric:tabular-nums}
+.page{max-width:1040px;margin:0 auto;padding:42px 34px 64px}
+.top{display:grid;grid-template-columns:1fr auto;gap:26px;align-items:end;padding-bottom:24px;border-bottom:1px solid var(--ink)}
+.kicker{font-size:12px;letter-spacing:.2em;color:var(--muted);font-weight:700;text-transform:uppercase}
+.title{margin:10px 0 0;font-size:68px;line-height:1;letter-spacing:-.065em;font-weight:800}
+.meta{font-size:12.5px;line-height:1.75;color:var(--muted);text-align:right}.meta b{color:var(--ink);font-weight:800;letter-spacing:.04em}
+.judgement{padding:30px 0 26px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:14px;color:var(--burg);font-weight:800;margin-bottom:12px}
+.judgement h2{margin:0;max-width:900px;font-size:36px;line-height:1.48;letter-spacing:-.045em;font-weight:800}
+.tone{margin-top:17px;font-size:13px;color:var(--burg);font-weight:800}.tone span{color:var(--ink);margin-left:10px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:42px;padding:25px 0;border-bottom:1px solid var(--line)}
+.compare h3,.column h3{margin:0 0 12px;font-size:17px;color:var(--burg);font-weight:800}
+.compare ul{margin:0;padding-left:18px}.compare li{margin:7px 0;font-size:14px;line-height:1.72}
+.section{padding-top:38px}.section-head{display:flex;align-items:baseline;gap:14px;padding-bottom:11px;border-bottom:1px solid var(--ink);margin-bottom:18px}
+.num{font-size:14px;color:var(--burg);font-weight:800;letter-spacing:.16em}
+.section-head h2{margin:0;font-size:30px;line-height:1.2;letter-spacing:-.035em;font-weight:800}
+.lede{margin:0 0 18px;font-size:15px;line-height:1.82}
+.facts{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fact{padding:15px 12px 16px}.fact .name{font-size:11.8px;color:var(--muted);font-weight:700;margin-bottom:9px}
+.fact .value{font-size:22px;font-weight:800;letter-spacing:-.025em}.fact .sub{font-size:11.5px;color:var(--muted);line-height:1.48;margin-top:5px}
+.editorial-note{margin-top:18px;padding:17px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.editorial-note .label{font-size:13px;color:var(--burg);font-weight:800;margin-bottom:8px}
+.editorial-note p{margin:0;font-size:15px;line-height:1.82}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:42px}.column{padding:4px 0}
+.column p{margin:0;font-size:14.5px;line-height:1.82}.column p+p{margin-top:10px}
+.quote{margin:18px 0 0;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:20px;line-height:1.7;font-style:italic}
+.market-list{border-top:1px solid var(--line)}
+.market-row{display:grid;grid-template-columns:1.15fr .9fr 1.8fr;gap:16px;padding:12px 2px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.58}
+.market-row .label,.market-row .value{font-weight:800}
+.story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}.story{padding-top:2px}
+.story .tag{font-size:12px;color:var(--burg);font-weight:800;margin-bottom:8px}
+.story h3{margin:0 0 9px;font-size:17px;line-height:1.45}.story p{margin:0;font-size:13.5px;line-height:1.76}.story p+p{margin-top:9px}
+.scenario{border-top:1px solid var(--line)}
+.scenario-row{display:grid;grid-template-columns:100px 1.35fr 1fr 1fr;gap:16px;padding:15px 2px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.62}
+.scenario-name{color:var(--burg);font-weight:800;font-size:15px}
+.sc-label{display:none;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:4px}
+.watch{border-top:1px solid var(--line)}.watch-row{display:grid;grid-template-columns:210px 1fr;gap:22px;padding:13px 2px;border-bottom:1px solid var(--line)}
+.watch-time{font-size:12.5px;font-weight:800;line-height:1.58}.watch-body{font-size:13.5px;line-height:1.7}
+.conclusion{margin-top:42px;padding-top:22px;border-top:3px solid var(--ink)}
+.conclusion .label{color:var(--burg);font-size:13px;font-weight:800;margin-bottom:10px}
+.conclusion .text{color:var(--burg);font-size:33px;line-height:1.55;letter-spacing:-.04em;font-weight:800}
+.checklist{border-top:1px solid var(--line)}.check{display:grid;grid-template-columns:250px 1fr;gap:20px;padding:14px 2px;border-bottom:1px solid var(--line)}
+.check .q{font-size:12.5px;color:var(--muted);font-weight:800}.check .a{font-size:14px;line-height:1.7;font-weight:700}
+.sources{margin-top:38px;padding-top:16px;border-top:1px solid var(--line);font-size:10.8px;line-height:1.78;color:var(--muted);word-break:break-word}
+.sources ol{padding-left:18px;margin:8px 0 0}.sources li{margin:3px 0}
+.sources a{color:inherit;text-decoration:none;border-bottom:1px dotted #999}
+.small{font-size:11.5px;color:var(--muted);line-height:1.68;margin-top:10px}
+@media(max-width:760px){
+.page{padding:30px 16px 48px}.top{grid-template-columns:1fr;gap:12px}.title{font-size:48px}.meta{text-align:left}
+.judgement h2{font-size:28px}.compare{grid-template-columns:1fr;gap:22px}
+.compare>div+div{padding-top:18px;border-top:1px solid var(--line)}
+.facts{grid-template-columns:repeat(2,1fr)}.fact{padding:14px 8px}.fact .value{font-size:20px}
+.columns{grid-template-columns:1fr;gap:0}.column+.column{margin-top:19px;padding-top:18px;border-top:1px solid var(--line)}
+.story-grid{grid-template-columns:1fr;gap:20px}.story+.story{padding-top:18px;border-top:1px solid var(--line)}
+.market-row{grid-template-columns:1fr 1fr}.market-row .note{grid-column:1/-1;color:var(--muted)}
+.scenario-row{grid-template-columns:1fr;gap:9px}.sc-label{display:block}
+.watch-row,.check{grid-template-columns:1fr;gap:6px}
+.section-head h2{font-size:26px}.conclusion .text{font-size:26px}.quote{font-size:18px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+<header class="top">
+  <div><div class="kicker">Morning Market &amp; Technology Brief · v6</div><h1 class="title">시장·기술 브리핑</h1></div>
+  <div class="meta">
+    <div><b>DATE</b> 2026-11-28 (토)</div>
+    <div><b>AS OF</b> 05:33 KST / 15:33 ET (11/27)</div>
+    <div><b>MARKET</b> 미국 정규장 조기 폐장 완료 · 직전 거래일 확정 종가</div>
+  </div>
+</header>
+
+<section class="judgement">
+  <div class="eyebrow">종합 판단</div>
+  <h2>미국은 휴일 단축 거래에서 기술주 저가 매수로 반등했지만, 높은 장기금리와 AI 투자 회수 논란은 남아 있다. 한국은 정책 기대와 외국인 현물 매수로 급반등했으나, 선물 매도와 얇은 미국 거래량을 감안하면 월요일 추격매수보다 수급 재확인이 우선이다.</h2>
+  <div class="tone">POSITION TONE <span>관망 · 조건 확인 후 분할 대응</span></div>
+</section>
+
+<section class="compare" aria-label="상승 요인과 위험 요인">
+  <div>
+    <h3>What Lifts the Market · 상승 요인</h3>
+    <ul>
+      <li>나스닥 <strong>+2.31%</strong>, 주간 <strong>+6.68%</strong>. S&amp;P 500도 주간 <strong>+5.60%</strong>로 2025년 4월 이후 가장 강한 주간 상승.</li>
+      <li>Micron <strong>+7.60%</strong>, Broadcom <strong>+3.82%</strong>, AMD <strong>+2.8%</strong> 등 일부 반도체가 저가 매수에 반응.</li>
+      <li>한국은 외국인 코스피 현물 <strong>+1.13조원</strong>, 기관 <strong>+2,390억원</strong> 순매수로 반등 폭 확대.</li>
+      <li>NVIDIA·Kioxia의 SSD 메모리 확장 실증은 AI 서버용 엔터프라이즈 SSD·NAND의 추가 수요 경로를 보여줌.</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Key Risks · 위험 요인</h3>
+    <ul>
+      <li>미국 10년물 금리 <strong>4.921%</strong>, 2년물 <strong>4.693%</strong>. 시장은 12월 연준 금리 인상 가능성을 약 99% 반영.</li>
+      <li>VIX는 <strong>24.56</strong>으로 여전히 높은 편이며, 변동성 완화가 추세 안정으로 이어졌는지 확인이 필요.</li>
+      <li>Brent는 금요일 하락했지만 주간 약 <strong>3%</strong> 상승. 중동 공급 리스크가 잔존.</li>
+      <li>Micron·Broadcom·AMD 강세와 달리 NVIDIA는 <strong>약 1.1% 하락</strong>. AI 관련주 반등이 아직 균일하지 않음.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">01</span><h2>Overnight Snapshot</h2></div>
+  <p class="lede"><strong>미국 정규장은 11월 27일 블랙프라이데이 단축 거래로 13:00 ET에 조기 종료</strong>됐다. 한국시간으로는 11월 28일 03:00 KST다. 현재 05:33 KST 기준 미국 시간외 거래 구간이며, 아래 주식·지수 값은 정규장 확정 종가다.</p>
+  <div class="facts">
+    <div class="fact"><div class="name">DOW · 11/27</div><div class="value">50,774.94</div><div class="sub">+1.18% · 확정</div></div>
+    <div class="fact"><div class="name">S&amp;P 500 · 11/27</div><div class="value">7,297.49</div><div class="sub">+1.60% · 확정</div></div>
+    <div class="fact"><div class="name">NASDAQ · 11/27</div><div class="value">24,129.50</div><div class="sub">+2.31% · 확정</div></div>
+    <div class="fact"><div class="name">RUSSELL 2000</div><div class="value">2,750.30</div><div class="sub">+1.71% · 확정</div></div>
+    <div class="fact"><div class="name">SOX · 11/27</div><div class="value">9,060.12</div><div class="sub">+3.25% · Nasdaq 지수 페이지</div></div>
+    <div class="fact"><div class="name">US 2Y</div><div class="value">4.693%</div><div class="sub">+6bp · Tradeweb 인용</div></div>
+    <div class="fact"><div class="name">US 10Y</div><div class="value">4.921%</div><div class="sub">+7.4bp · Tradeweb 인용</div></div>
+    <div class="fact"><div class="name">DXY</div><div class="value">103.97</div><div class="sub">+0.36% · 11/27 일간 종가</div></div>
+    <div class="fact"><div class="name">VIX</div><div class="value">24.56</div><div class="sub">11/27 종가 · Yahoo Finance</div></div>
+    <div class="fact"><div class="name">BRENT</div><div class="value">$95.44</div><div class="sub">−1.2% 당일 · +3% 주간</div></div>
+    <div class="fact"><div class="name">USD/KRW</div><div class="value">₩1,337.9</div><div class="sub">11/27 15:30 KST 기준 · 원화 강세</div></div>
+  </div>
+  <div class="editorial-note">
+    <div class="label">시장 상태와 해석</div>
+    <p>이번 주 S&amp;P 500은 <strong>+5.60%</strong>, 나스닥은 <strong>+6.68%</strong> 반등했다. Reuters는 금요일 반등에 뚜렷한 단일 촉매가 없었다고 평가했고, WSJ는 매도 소진과 휴일 단축 거래의 낮은 유동성이 매수 폭을 키웠을 가능성을 설명했다. 주간 반등을 추세 전환으로 확정할 근거는 아직 부족하다.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">02</span><h2>Why It Moved</h2></div>
+  <div class="story-grid">
+    <article class="story">
+      <div class="tag">01 · PRICE ACTION</div>
+      <h3>기술주 저가 매수, 그러나 반도체 내부는 차별화</h3>
+      <p>금요일 상승은 새로운 대형 실적이나 정책 발표보다 앞선 급락 이후의 포지션 축소·저가 매수 성격이 강했다. S&amp;P 500 기여도 상위에는 Amazon <strong>+3.96%</strong>, Tesla <strong>+5.22%</strong>, Broadcom <strong>+3.82%</strong>, Micron <strong>+7.60%</strong>이 포함됐다.</p>
+      <p>반면 NVIDIA는 Barron's 집계에서 약 <strong>−1.1%</strong>, AMD는 <strong>+2.8%</strong>로 엇갈렸다. 지수 상승률만 보고 AI 하드웨어 전반의 위험 선호가 완전히 회복됐다고 보기는 어렵다.</p>
+    </article>
+    <article class="story">
+      <div class="tag">02 · MEGACAP SCAN</div>
+      <h3>Meta·Muse는 주가 상승과 제품 흥행을 분리해서 봐야 한다</h3>
+      <p>Meta는 금요일 약 <strong>+3.5%</strong>, Amazon은 <strong>+3.96%</strong>, Tesla는 <strong>+5.22%</strong> 상승했다. Apple은 <strong>+0.83%</strong>였다. Microsoft·Alphabet·Oracle도 함께 점검했으나, 이들 기업에서 지난 24~48시간 동안 시장을 단독으로 움직였다고 확인할 신규 모델 출시·대형 CAPEX·칩 구매 발표는 찾지 못했다.</p>
+      <p>Meta의 상승을 Muse 다운로드나 이용자 급증의 새 증거로 해석할 근거도 확인되지 않았다. 최근 Muse 지표를 재탕하지 않고, 이번 주가는 광범위한 위험 선호 회복으로 분류한다.</p>
+    </article>
+    <article class="story">
+      <div class="tag">03 · MACRO &amp; LIQUIDITY</div>
+      <h3>상승 폭보다 금리와 거래 환경이 중요</h3>
+      <p>Reuters는 금요일 글로벌 반등에 명확한 단일 촉매가 없었다고 전했다. 미국은 추수감사절 다음 날 조기 폐장했고, WSJ는 얇은 유동성이 매수세를 확대했을 가능성을 지적했다.</p>
+      <p>미국 국채금리는 주식 반등과 유가 상승 속에 올랐다. 시장은 12월 연준 인상 가능성을 약 99%로 가격에 반영하고 있어, 성장주 밸류에이션에는 여전히 부담이다.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">03</span><h2>AI · Semiconductor Check</h2></div>
+  <div class="columns">
+    <article class="column">
+      <h3>GPU 메모리 계층 변화: NVIDIA × Kioxia</h3>
+      <p>Kioxia는 11월 25일 NVIDIA와 함께 SSD를 활용해 GPU가 접근할 수 있는 메모리 공간을 확장하는 실증을 발표했다. GB200 NVL72 랙에 Kioxia NVMe SSD 144개를 연결해 원시 용량 약 <strong>1.1PB</strong>, 노드당 약 <strong>60TB</strong>의 플래시 기반 확장 메모리를 구성했고, 2조 개 벡터 데이터베이스 처리 가능성을 시연했다.</p>
+      <p>Kioxia 주가는 11월 26일 장중 최대 <strong>14.5%</strong> 상승했다. 다만 양사는 기술적 타당성과 성능을 평가 중이며 상용 주문·가격·양산 일정은 공개하지 않았다.</p>
+      <p><strong>해석:</strong> SSD가 HBM을 대체한다기보다 대용량 데이터의 하위 메모리 계층을 보완하는 접근이다. 엔터프라이즈 SSD·NAND 수요에는 기회가 될 수 있지만, HBM의 대역폭·지연시간 역할은 다르다. Samsung Electronics와 SK hynix의 HBM 수요가 곧바로 줄어든다고 단정할 근거는 없다. 향후 GPU당 HBM 용량 증가율과 SSD 계층 도입률을 함께 추적해야 한다.</p>
+    </article>
+    <article class="column">
+      <h3>전력·데이터센터: JERA의 hyperscaler 협의</h3>
+      <p>Reuters는 일본 최대 발전사 JERA가 도쿄권 발전소 인근 데이터센터 건설을 두고 Anthropic, Meta와 협의 중이며 Amazon, Microsoft, Google과도 논의하고 있다고 보도했다. 기존에는 Dell 및 RHAELM과 지바의 <strong>150억 달러</strong> 규모 hyperscale 데이터센터 개발 MOU가 발표된 바 있다.</p>
+      <p>이번에 확인된 것은 복수 기업과의 협의 단계다. 새 계약이나 GPU·ASIC 구매 규모가 확정된 것은 아니다. 전력·부지·냉각·계통 연결이 AI 인프라 확장의 병목이라는 점을 보여주지만, 특정 반도체 공급사 매출로 바로 환산해서는 안 된다.</p>
+      <div class="quote">AI 인프라의 다음 병목은 연산 칩만이 아니라, 칩을 가동할 전력과 메모리 계층을 함께 확보하는 능력이다.</div>
+    </article>
+  </div>
+  <div class="editorial-note">
+    <div class="label">메모리·주요 종목과 Micron IR</div>
+    <p>11월 27일 미국 정규장 기준 Micron <strong>+7.60%</strong>, Broadcom <strong>+3.82%</strong>, AMD <strong>+2.8%</strong>, NVIDIA 약 <strong>−1.1%</strong>로 방향이 갈렸다. Micron의 최신 공식 실적은 2026년 9월 30일 발표한 FY2026 4분기 결과로, 매출 <strong>542억 3천만 달러</strong>, GAAP 희석 EPS <strong>32.87달러</strong>, Non-GAAP EPS <strong>33.42달러</strong>다. 다음 FY2027 1분기 실적 컨퍼런스콜은 12월 17일 14:30 Mountain Time으로 공식 공지됐다.</p>
+  </div>
+  <div class="market-list" style="margin-top:18px">
+    <div class="market-row"><div class="label">Samsung Electronics · 005930</div><div class="value">₩179,100 · +4.55%</div><div class="note">11/27 KRX 정규장 종가 · 한국 본주</div></div>
+    <div class="market-row"><div class="label">SK hynix · 000660</div><div class="value">₩1,110,000 · +5.41%</div><div class="note">11/27 KRX 정규장 종가 · 한국 본주</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">04</span><h2>Cross Asset</h2></div>
+  <div class="market-list">
+    <div class="market-row"><div class="label">미국 2년물 / 10년물</div><div class="value">4.693% / 4.921%</div><div class="note">11/27 금요일 각각 +6bp / +7.4bp · Tradeweb 인용치</div></div>
+    <div class="market-row"><div class="label">달러지수 DXY</div><div class="value">103.97 · +0.36%</div><div class="note">11/27 일간 종가 · Investing.com</div></div>
+    <div class="market-row"><div class="label">VIX</div><div class="value">24.56</div><div class="note">11/27 종가 · 전일보다 낮아졌지만 절대 수준은 여전히 높음</div></div>
+    <div class="market-row"><div class="label">Brent</div><div class="value">$95.44 · −1.2%</div><div class="note">11/27 결제 · 주간 약 +3%, 11월 첫 주간 상승</div></div>
+    <div class="market-row"><div class="label">USD/KRW</div><div class="value">₩1,337.9</div><div class="note">11/27 15:30 KST Hana Bank 기준 · 전일 대비 원화 4.8원 강세</div></div>
+  </div>
+  <p class="small">유가는 당일 하락했으나 호르무즈 해협 선박 공격과 사우디 에너지 시설 피해가 공급 차질 프리미엄을 지지했다. OPEC+는 11월 29일 회의에서 2027년 1분기 생산 목표를 유지할 것으로 Reuters가 보도했으며, 최종 결정은 확인이 필요하다.</p>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">05</span><h2>Korea Open Preview</h2></div>
+  <p class="lede"><strong>11월 27일 금요일 KRX 정규장 확정 종가, 15:30 KST 기준.</strong> 다음 정규장은 11월 30일 월요일 09:00 KST에 열린다.</p>
+  <div class="facts">
+    <div class="fact"><div class="name">KOSPI</div><div class="value">4,915.68</div><div class="sub">+4.34% · +204.47pt</div></div>
+    <div class="fact"><div class="name">KOSDAQ</div><div class="value">708.99</div><div class="sub">+8.13% · +53.28pt</div></div>
+    <div class="fact"><div class="name">KOSPI 200</div><div class="value">758.51</div><div class="sub">+4.32% · 정규장 종가</div></div>
+    <div class="fact"><div class="name">FOREIGN · KOSPI</div><div class="value">+₩1.13tn</div><div class="sub">현물 순매수</div></div>
+    <div class="fact"><div class="name">INSTITUTION · KOSPI</div><div class="value">+₩239bn</div><div class="sub">현물 순매수</div></div>
+  </div>
+  <div class="editorial-note">
+    <div class="label">수급의 질</div>
+    <p>외국인은 코스피 현물 <strong>+1.13조원</strong>, 기관은 <strong>+2,390억원</strong> 순매수했고 개인은 <strong>−1.78조원</strong> 순매도했다. 코스닥도 외국인 <strong>+3,030억원</strong>, 기관 <strong>+5,870억원</strong> 매수 우위였다. 그러나 코스피200 선물에서는 외국인 <strong>−1.10조원</strong>, 기관 <strong>+1.20조원</strong>으로 현물과 반대 방향이 나타났다. 현물 매수만으로 외국인 위험 선호가 완전히 돌아왔다고 보기 어렵다.</p>
+  </div>
+  <div class="market-list" style="margin-top:18px">
+    <div class="market-row"><div class="label">KOSPI 200 야간선물</div><div class="value">728.00 · +0.17%</div><div class="note">마지막 확인 완료 세션 11/27 06:00 KST · 전일 726.75 대비. 11/27 18:00~11/28 06:00 세션은 05:33 현재 미마감이므로 최신 확정값으로 취급하지 않음.</div></div>
+    <div class="market-row"><div class="label">시장안정조치</div><div class="value">가동 준비 · 실제 투입 미확인</div><div class="note">금융위 11/23 공식 발표는 증안펀드 즉시 가동 준비. 자금 실제 투입·확대 규모는 미확정. 11/30 점검 일정은 보도 기준, 공식 시각 미확인.</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">06</span><h2>Scenario &amp; Action</h2></div>
+  <div class="scenario">
+    <div class="scenario-row">
+      <div class="scenario-name">상방</div>
+      <div><span class="sc-label">조건</span>코스피 4,900선 유지, 외국인 현물 순매수 지속, 코스피200 선물 순매도 축소</div>
+      <div><span class="sc-label">해석</span>정책 기대가 실제 수급으로 이어지고 반도체 대형주가 지수 반등을 지지</div>
+      <div><span class="sc-label">대응</span>삼성전자·SK hynix 동반 강세와 거래대금 확인 후 제한적 분할 대응</div>
+    </div>
+    <div class="scenario-row">
+      <div class="scenario-name">기준</div>
+      <div><span class="sc-label">조건</span>4,900 부근 등락, 현물 매수는 유지되나 선물 매도 잔존</div>
+      <div><span class="sc-label">해석</span>급락 뒤 기술적 반등과 정책 기대가 혼재</div>
+      <div><span class="sc-label">대응</span>시초가 추격보다 첫 30~60분 수급·업종 확산 확인</div>
+    </div>
+    <div class="scenario-row">
+      <div class="scenario-name">하방</div>
+      <div><span class="sc-label">조건</span>외국인 현물 매도 재개, 선물 매도 지속, 코스피 11/26 종가 4,711.21 하회</div>
+      <div><span class="sc-label">해석</span>정책 기대만으로 형성된 반등이 되돌려질 위험</div>
+      <div><span class="sc-label">대응</span>레버리지·고베타 노출 축소, 반등을 이용한 위험 관리 우선</div>
+    </div>
+  </div>
+  <div class="editorial-note">
+    <div class="label">현재 판단</div>
+    <p><strong>관망.</strong> 11월 27일 하루의 큰 상승률만으로 추세 전환을 선언하지 않는다. 비중 확대 조건은 외국인 현물 매수 지속, 코스피200 선물 매도 완화, 삼성전자·SK hynix의 동반 상대강도다. 반대로 현물 매수 반전과 4,711.21 하회가 겹치면 반등분을 지키는 쪽으로 대응한다.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">07</span><h2>Watch</h2></div>
+  <div class="watch">
+    <div class="watch-row"><div class="watch-time">11/29 일요일<br>OPEC+</div><div class="watch-body">2027년 1분기 산유량 목표 결정. Reuters는 현 수준 유지 가능성을 보도했으나 공식 발표 전까지 확정하지 않는다. 회의 시각은 확인되지 않았다.</div></div>
+    <div class="watch-row"><div class="watch-time">11/30 월요일<br>한국 시장</div><div class="watch-body">시장안정조치 점검 관련 보도 일정과 증안펀드 실제 집행 여부 확인. 공식 발표 시각은 확인되지 않았다. 코스피 현물·선물 외국인 수급의 방향 전환이 핵심이다.</div></div>
+    <div class="watch-row"><div class="watch-time">12/01 10:00 ET<br>12/02 00:00 KST</div><div class="watch-body">미국 JOLTS 10월 구인·이직 보고서. 노동 수요와 연준 정책 경로 확인.</div></div>
+    <div class="watch-row"><div class="watch-time">12/04 08:30 ET<br>12/04 22:30 KST</div><div class="watch-body">미국 11월 고용보고서(Employment Situation).</div></div>
+    <div class="watch-row"><div class="watch-time">12/08–09<br>FOMC</div><div class="watch-body">이틀간 회의. 12/09 14:00 ET(12/10 04:00 KST) 성명·경제전망, 14:30 ET(12/10 04:30 KST) 기자회견.</div></div>
+    <div class="watch-row"><div class="watch-time">12/10 08:30 ET<br>12/10 22:30 KST</div><div class="watch-body">미국 11월 CPI. 연준 결정 이후 금리 경로 재평가 변수.</div></div>
+    <div class="watch-row"><div class="watch-time">12/15 08:30 ET<br>12/15 22:30 KST</div><div class="watch-body">미국 11월 PPI.</div></div>
+    <div class="watch-row"><div class="watch-time">12/17 14:30 MT<br>12/18 06:30 KST</div><div class="watch-body">Micron FY2027 1분기 실적 컨퍼런스콜. 회사 IR이 공지한 공식 일정.</div></div>
+    <div class="watch-row"><div class="watch-time">12/23 08:30 EST<br>12/23 22:30 KST</div><div class="watch-body">미국 11월 Personal Income and Outlays 및 PCE 물가지수.</div></div>
+  </div>
+</section>
+
+<div class="conclusion">
+  <div class="label">핵심 결론</div>
+  <div class="text">한국장은 급반등의 연속성보다 외국인 현물 매수 지속과 코스피200 선물 매도 축소가 핵심이다. 미국은 기술주 반등에도 금리와 AI 수익화 리스크가 남아 있다. 반도체는 추격보다 가격·수급 확인 후 분할 대응한다.</div>
+</div>
+
+<section class="section">
+  <div class="section-head"><span class="num">08</span><h2>Today Checklist</h2></div>
+  <div class="checklist">
+    <div class="check"><div class="q">미국 시장 상태</div><div class="a">11/27 13:00 ET 조기 폐장 완료. 수치는 정규장 확정 종가이며 시간외 가격과 구분했다.</div></div>
+    <div class="check"><div class="q">SOX 기준값</div><div class="a">Nasdaq 공식 지수 페이지의 11/27 데이터 기준 9,060.12, +3.25%를 사용했다.</div></div>
+    <div class="check"><div class="q">한국 수급</div><div class="a">코스피 현물 외국인 매수와 코스피200 선물 외국인 매도가 동시에 발생했다. 다음 세션에서 지속 여부를 확인한다.</div></div>
+    <div class="check"><div class="q">NVIDIA × Kioxia</div><div class="a">1.1PB SSD 실증은 PoC다. 상용 주문·가격·양산 일정이 발표된 것으로 해석하지 않는다.</div></div>
+    <div class="check"><div class="q">Micron IR</div><div class="a">최신 공식 실적은 FY2026 Q4(9/30 발표), 다음 콜은 12/17 14:30 MT로 확인했다.</div></div>
+    <div class="check"><div class="q">정책·일정</div><div class="a">FOMC·BLS·BEA 공식 캘린더의 날짜와 시간을 확인했다. 공식 시각이 없는 OPEC+ 및 한국 점검회의는 시각을 만들지 않았다.</div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="num">09</span><h2>RTL · EDA Tech Radar</h2></div>
+  <div class="columns">
+    <article class="column">
+      <h3>TSMC A14 PDK 0.9 design-in</h3>
+      <p>11월 26일 보도에 따르면 TSMC는 1.4nm급 A14의 PDK 버전 0.9와 설계 생태계가 고객 설계 착수 단계에 도달했다고 밝혔다. Cadence와 Synopsys는 Arm Cortex-A725 기반 전체 설계 플로우 인증을 완료했고, Siemens EDA는 일부 sign-off 항목이 진행 중이다.</p>
+      <p>TSMC가 제시한 N2P 대비 수치는 동일 전력에서 최대 14% 성능 향상 또는 동일 성능에서 최대 23% 전력 절감이다. 이는 공정·셀 구조에 대한 회사 측 비교 수치이며, 실제 제품 PPA 결과와 구분해야 한다.</p>
+    </article>
+    <article class="column">
+      <h3>RTL·ASIC 설계 관점</h3>
+      <p>PDK 0.9는 고객의 floorplan·RTL-to-GDS·STA·EM/IR sign-off 준비가 앞당겨지는 설계 생태계 마일스톤이다. 아직 양산 실적이나 고객 테이프아웃을 의미하지 않는다. 위험 생산 목표는 2027년 하반기, 양산 목표는 2028년 하반기다.</p>
+      <p>이번 24~48시간에는 별도의 Stratus/HLS 자동 탐색이나 RTL 생성·검증 도구의 신규 대형 발표는 확인되지 않았다. A14의 EDA 인증 범위와 라이브러리·타이밍·전력 sign-off 완성도를 후속 추적한다.</p>
+    </article>
+  </div>
+</section>
+
+<footer class="sources">
+  <strong>Sources · DATA CUT 2026-11-28 05:33 KST</strong>
+  <ol>
+    <li><a href="https://apnews.com/article/04dab6079cf7f3dfe7285a3cc1f240a2" target="_blank" rel="noopener">AP · U.S. major stock indexes, 11/27/2026 close</a> — S&amp;P 500, Dow, Nasdaq, Russell 2000 및 주간 수익률.</li>
+    <li><a href="https://www.reuters.com/world/china/global-markets-global-markets-2026-11-27/" target="_blank" rel="noopener">Reuters · Global markets rally, 11/27/2026</a> — 반등 촉매 부재, 조기 폐장, 연준 인상 기대, 미 국채·달러·유가.</li>
+    <li><a href="https://indexes.nasdaq.com/index/overview/sox" target="_blank" rel="noopener">Nasdaq Indexes · PHLX Semiconductor Index</a> — 11/27 SOX 9,060.12, +3.25%.</li>
+    <li><a href="https://www.wsj.com/finance/investing/u-s-treasury-yields-rise-in-shortened-post-thanksgiving-trade-f0822039" target="_blank" rel="noopener">WSJ · U.S. Treasury yields, 11/27/2026</a> — 2년물 4.693%, 10년물 4.921%.</li>
+    <li><a href="https://www.reuters.com/business/energy/brent-trades-near-months-high-mideast-conflict-threatens-supply-2026-11-27/" target="_blank" rel="noopener">Reuters · Brent settlement, 11/27/2026</a> — Brent $95.44, 당일 −1.2%, 주간 약 +3%.</li>
+    <li><a href="https://ca.investing.com/currencies/us-dollar-index-historical-data/" target="_blank" rel="noopener">Investing.com · U.S. Dollar Index historical data</a> — DXY 11/27 종가 103.970.</li>
+    <li><a href="https://finance.yahoo.com/quote/%5EVIX/history/" target="_blank" rel="noopener">Yahoo Finance · CBOE VIX historical data</a> — 11/27 VIX 종가 24.56.</li>
+    <li><a href="https://portfolio-terminal.com/markets/stock-market-close/november-27-2026" target="_blank" rel="noopener">Portfolio Terminal · U.S. stock market close, 11/27/2026</a> — Amazon, Tesla, Broadcom, Micron, Apple 기여도 및 종가 수익률.</li>
+    <li><a href="https://www.barrons.com/articles/stock-movers-ac5937bf" target="_blank" rel="noopener">Barron's · Stock movers, 11/27/2026</a> — NVIDIA 하락 및 반도체·AI 관련 종목 흐름.</li>
+    <li><a href="https://www.thetimes.com/business/companies-markets/article/ai-stocks-rebound-thanksgiving-vggmcsfjm" target="_blank" rel="noopener">The Times · AI stocks rebound, 11/27/2026</a> — AMD +2.8% 등 주요 종목 움직임.</li>
+    <li><a href="https://finance.yahoo.com/quote/META/history/" target="_blank" rel="noopener">Yahoo Finance · Meta Platforms historical data</a> — META 11/27 종가 데이터.</li>
+    <li><a href="https://americas.kioxia.com/en-us/business/news/2026/ssd-20261125-1.html" target="_blank" rel="noopener">Kioxia official release, 11/25/2026</a> — NVIDIA SCADA·Storage-Next와 SSD 기반 GPU 메모리 확장 PoC.</li>
+    <li><a href="https://finance.yahoo.com/markets/stocks/articles/kioxia-jumps-14-nvidia-collaboration-062844097.html" target="_blank" rel="noopener">Yahoo Finance / Investing.com · Kioxia market reaction, 11/26/2026</a> — Kioxia 주가 장중 최대 상승률.</li>
+    <li><a href="https://www.reuters.com/world/asia-pacific/japans-jera-enters-talks-with-anthropic-meta-build-data-centres-nikkei-reports-2026-11-26/" target="_blank" rel="noopener">Reuters · JERA talks with hyperscalers, 11/26–27/2026</a> — 도쿄권 발전소 인근 데이터센터 협의.</li>
+    <li><a href="https://investors.micron.com/news/press-release/2026/Micron-Technology-Inc--Reports-Record-Fiscal-Fourth-Quarter-and-Full-Year-2026-Results/" target="_blank" rel="noopener">Micron Investor Relations · FY2026 Q4 results, 9/30/2026</a> — 최근 공식 실적.</li>
+    <li><a href="https://investors.micron.com/news/press-release/2026/Micron-Technology-to-Report-Fiscal-First-Quarter-Results-on-December-17-2026/default.aspx" target="_blank" rel="noopener">Micron Investor Relations · FY2027 Q1 earnings date, 11/19/2026</a> — 12/17 14:30 Mountain Time.</li>
+    <li><a href="https://m.newsis.com/view/NISX20261127_0003886561" target="_blank" rel="noopener">Newsis · KOSPI and KOSDAQ close, 11/27/2026</a> — 국내 지수와 외국인 수급.</li>
+    <li><a href="https://snowshagal.com/en/market/2026-11-27/" target="_blank" rel="noopener">Snowshagal · KRX close and Korean shares, 11/27/2026</a> — KOSPI, KOSDAQ, Samsung Electronics, SK hynix, USD/KRW.</li>
+    <li><a href="https://snowshagal.com/market/investor-flows/" target="_blank" rel="noopener">Snowshagal · KRX investor flows, 11/27/2026</a> — 현물·선물 외국인, 기관, 개인 순매수.</li>
+    <li><a href="https://www.fsc.go.kr/no070300/88181" target="_blank" rel="noopener">Financial Services Commission · 단계별 시장안정조치, 11/23/2026</a> — 증안펀드 가동 준비 공식 발표.</li>
+    <li><a href="https://conference.tradingforaliving.co.kr/live/night-futures" target="_blank" rel="noopener">Trading for a Living · KOSPI 200 night futures</a> — 마지막 확인 완료 세션의 11/27 06:00 KST 값.</li>
+    <li><a href="https://www.federalreserve.gov/newsevents/2026-december.htm" target="_blank" rel="noopener">Federal Reserve · December 2026 calendar</a> — 12/8–9 FOMC, 12/9 성명·기자회견 시각.</li>
+    <li><a href="https://www.bls.gov/schedule/2026/12_sched_list.htm" target="_blank" rel="noopener">BLS · December 2026 release schedule</a> — JOLTS, 고용보고서, CPI, PPI 일정 및 ET 시각.</li>
+    <li><a href="https://bea.gov/news/2026/personal-income-and-outlays-october-2026" target="_blank" rel="noopener">BEA · Personal Income and Outlays release schedule</a> — 11월 PCE 12/23 08:30 EST.</li>
+    <li><a href="https://www.tomshardware.com/tech-industry/semiconductors/tsmcs-a14-1-4nm-class-node-is-ready-for-chip-design-boost-cells-promise-14-percent-performance-uplift-or-23-percent-power-cut-over-n2p" target="_blank" rel="noopener">Tom's Hardware · TSMC A14 PDK 0.9, 11/26/2026</a> — A14 설계 착수, Cadence·Synopsys 인증, 생산 목표.</li>
+  </ol>
+  <p class="small">가격·수익률은 각 출처의 표기 시각과 기준일을 따랐다. 확정값이 아닌 현재 진행 중인 야간선물 세션은 미확정으로 표시했으며, 상용 계약이 공개되지 않은 PoC·협의 건은 확정 수주로 해석하지 않았다.</p>
+</footer>
+</main>
+</body>
+</html>
